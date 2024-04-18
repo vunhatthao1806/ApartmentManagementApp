@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+# client_id: mgnks8ZaMQdWmcxylI8oq95KxbpyRlwUjqdRYasB
+# client_secret: 2ndZOCWCz7if7brMkhov6bSUIsvlgXINorFybzCXoXJeiZloXICNCyEQlMldEk2VApDC5eR3Mniz9yh7daMjUnN0awLWQB4y00LCwVmXrtGlrUi1HlJ1BT4KdQJrZEp4
 
 from pathlib import Path
 
@@ -51,6 +53,9 @@ INSTALLED_APPS = [
     'apartments.apps.ApartmentsConfig',
     'ckeditor',
     'ckeditor_uploader',
+    'rest_framework',
+    'drf_yasg',
+    'oauth2_provider'
 ]
 
 MIDDLEWARE = [
@@ -64,6 +69,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'apartmentapi.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
 
 TEMPLATES = [
     {

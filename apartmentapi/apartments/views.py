@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apartments.models import User, Receipt, CarCard
-from apartments import serializers
+from apartments import serializers, perms
 
 class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = User.objects.filter(is_active=True)
@@ -31,7 +31,12 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
 class RecieptViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Receipt.objects.select_related('tag').all()
     serializer_class = serializers.RecieptDetailsSerializer
-
+    permission_classes = [permissions.IsAuthenticated]
+    def get_object(self):
+        receipt = super().get_object()
+        if receipt.user != self.request.user:
+            self.permission_denied(self.request)
+        return receipt
 
 class CarCardViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = CarCard.objects.all()

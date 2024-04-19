@@ -13,19 +13,18 @@ class BaseModel(models.Model):
         abstract = True
         ordering = ['id']
 
+class User(AbstractUser):
+    avatar = CloudinaryField(null=True)
 
 class ECabinet(models.Model):
     name = models.CharField(max_length=20)
-
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null= True)
     def __str__(self):
         return self.name
 
 
-class User(AbstractUser):
-    avatar = CloudinaryField(null=True)
 
-
-class Flat(models.Model):  # Flat xoa thi user mat, thi ecabinet mat
+class Flat(models.Model):
     floor = models.CharField(max_length=20)
     apartment_num = models.CharField(max_length=20, unique=True)
     block = models.CharField(max_length=10)
@@ -64,7 +63,10 @@ class Receipt(BaseModel):
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     status = models.BooleanField(default=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null= True)
 
+    def __str__(self):
+        return  self.title
 
 class Resident(models.Model):
     identity_num = models.CharField(max_length=25)

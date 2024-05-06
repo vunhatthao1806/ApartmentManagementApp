@@ -13,24 +13,25 @@ class BaseModel(models.Model):
         abstract = True
         ordering = ['id']
 
+
 class User(AbstractUser):
     avatar = CloudinaryField(null=True)
 
-class ECabinet(models.Model):
+
+class ECabinet(BaseModel):
     name = models.CharField(max_length=20)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null= True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+
     def __str__(self):
         return self.name
-
 
 
 class Flat(models.Model):
     floor = models.CharField(max_length=20)
     apartment_num = models.CharField(max_length=20, unique=True)
     block = models.CharField(max_length=10)
-    description = RichTextField()
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    e_cabinet = models.ForeignKey(ECabinet, on_delete=models.PROTECT, unique=True)
+    e_cabinet = models.OneToOneField(ECabinet, on_delete=models.PROTECT, unique=True)
 
     def __str__(self):
         return self.apartment_num
@@ -57,32 +58,31 @@ class Item(models.Model):
     name = models.CharField(max_length=255)
     e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
+    def status_text(self):
+        return "received" if self.status else "dismissed"
+
 
 class Receipt(BaseModel):
     title = models.CharField(max_length=255)
+    status = models.BooleanField(default=True)
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
-    status = models.BooleanField(default=True)
-    user = models.ForeignKey(User, on_delete=models.PROTECT, null= True)
-
-    def __str__(self):
-        return  self.title
-
-class Resident(models.Model):
-    identity_num = models.CharField(max_length=25)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
-
-
-class Survey(BaseModel):
-    title = models.CharField(max_length=255)
-    user = models.ManyToManyField(User)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.title
 
-class Question(BaseModel):
-    content = models.CharField(max_length=255)
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+
+class Survey(BaseModel):
+    title = models.CharField(max_length=255)
+    content = RichTextField()
+    user = models.ManyToManyField(User)
+
+    def __str__(self):
+        return self.title
 
 
 class Complaint(BaseModel):
@@ -91,6 +91,9 @@ class Complaint(BaseModel):
     image = CloudinaryField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tag = models.ManyToManyField(Tag)
+
+    def __str__(self):
+        return self.title
 
 
 class Interaction(BaseModel):

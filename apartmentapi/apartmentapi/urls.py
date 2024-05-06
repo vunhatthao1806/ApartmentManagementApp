@@ -46,5 +46,5 @@ urlpatterns = [
             name='schema-redoc'),
     path('o/', include('oauth2_provider.urls',
                        namespace='oauth2_provider')),
-
+    path('surveys/', include('djf_surveys.urls'))
 ]

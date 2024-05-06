@@ -1,8 +1,14 @@
 from django.contrib import admin
-from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Question, Survey
+from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item
 from django.utils.html import mark_safe
 import cloudinary
-from django import forms
+
+
+class ApartmentAppAdminSite(admin.AdminSite):
+    site_header = "HỆ THỐNG QUẢN LÝ CHUNG CƯ"
+
+
+admin_site = ApartmentAppAdminSite('myapartment')
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -22,27 +28,51 @@ class UserAdmin(admin.ModelAdmin):
         }
 
 
-class ApartmentAppAdminSite(admin.AdminSite):
-    site_header = "HỆ THỐNG QUẢN LÝ CHUNG CƯ"
+class FlatAdmin(admin.ModelAdmin):
+    list_display = ['id', 'floor', 'block', 'apartment_num']
+    search_fields = ['floor', 'block', 'apartment_num']
+    list_filter = ['apartment_num']
+
+    class Media:
+        css = {
+            'all': ['/static/css/style.css']
+        }
 
 
-admin_site = ApartmentAppAdminSite('myapartment')
+class ECabinetAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'user', 'active']
+    search_fields = ['name']
 
 
-class QuestionInline(admin.TabularInline):
-    model = Question
-    extra = 1
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'e_cabinet', 'status_text']
+    search_fields = ['name']
 
 
-class SurveyAdmin(admin.ModelAdmin):
-    inlines = [QuestionInline]
+class ComplaintAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'active', 'created_date', 'updated_date']
+    search_fields = ['title']
+    readonly_fields = ['my_image']
+
+    def my_image(self, complaint):
+        if complaint.image:
+            if type(complaint.image) is cloudinary.CloudinaryResource:
+                return mark_safe(f"<img width='300' src='{complaint.image.url}' />")
+            return mark_safe(f"<img width='300' src='{complaint.image.title}' />")
+
+
+class ReceiptAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'status', 'created_date', 'updated_date']
+    search_fields = ['name', 'status']
 
 
 # Register your models here.
 admin_site.register(User, UserAdmin)
-admin_site.register(Flat)
+admin_site.register(Flat, FlatAdmin)
 admin_site.register(CarCard)
-admin_site.register(Receipt)
+admin_site.register(Receipt, ReceiptAdmin)
+admin_site.register(Complaint, ComplaintAdmin)
 admin_site.register(Tag)
-admin_site.register(ECabinet)
-admin_site.register(Survey, SurveyAdmin)
+admin_site.register(ECabinet, ECabinetAdmin)
+admin_site.register(Comment)
+admin_site.register(Item, ItemAdmin)

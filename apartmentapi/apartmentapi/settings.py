@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     'drf_yasg',
-    'oauth2_provider'
+    'oauth2_provider',
+    'djf_surveys'
 ]
 
 MIDDLEWARE = [
@@ -87,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'djf_surveys.context_processors.surveys_context'
             ],
         },
     },

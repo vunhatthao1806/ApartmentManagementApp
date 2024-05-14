@@ -32,12 +32,17 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
     # @action(methods=['post'], url_path='users', detail=True)
     # def like(self, request, pk):
     #     li, created = User.objects.get_or_create(user=request.user)
+    #
 
 
-class RecieptViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+class ReceiptViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
     queryset = Receipt.objects.select_related('tag').all()
-    serializer_class = serializers.RecieptDetailsSerializer
+    serializer_class = serializers.ReceiptDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        if (request.user.is_staff):
+            return self.create(request, *args, **kwargs)
 
     def get_object(self):
         receipt = super().get_object()
@@ -46,7 +51,7 @@ class RecieptViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         return receipt
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = self.queryset.filter(status=True)
 
         # lọc hóa đơn theo tên hóa đơn
         q = self.request.query_params.get('q')
@@ -112,8 +117,9 @@ class ItemViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView
 
 
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.CreateAPIView):
-    queryset = Complaint.objects.prefetch_related('tag').filter(active=True)  # tag lúc nào cũng cần dùng khi vào chi tiết complaint
-    serializer_class = serializers.ComplaintDetailSerializer
+    queryset = Complaint.objects.select_related('tag').filter(
+        active=True)  # tag lúc nào cũng cần dùng khi vào chi tiết complaint
+    serializer_class = serializers.ComplaintSerializer
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated:

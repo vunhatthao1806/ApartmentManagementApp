@@ -5,7 +5,7 @@ from cloudinary.models import CloudinaryField
 
 
 class BaseModel(models.Model):
-    created_date = models.DateTimeField(auto_now_add=True)
+    created_date = models.DateTimeField(auto_now_add=True, null= True)
     updated_date = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
 
@@ -40,6 +40,10 @@ class Flat(models.Model):
 class CarCard(BaseModel):
     type = models.CharField(max_length=100, unique=True)
     number_plate = models.CharField(max_length=20)
+    image_mrc_m1 = CloudinaryField(null=True)
+    image_mrc_m2 = CloudinaryField(null=True)
+    image_idcard_m1 = CloudinaryField(null=True)
+    image_idcard_m2 = CloudinaryField(null=True)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -53,7 +57,8 @@ class Tag(BaseModel):
         return self.name
 
 
-class Item(models.Model):
+class Item(BaseModel):
+    image = CloudinaryField(null=True)
     status = models.BooleanField()
     name = models.CharField(max_length=255)
     e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
@@ -64,10 +69,11 @@ class Item(models.Model):
     def status_text(self):
         return "received" if self.status else "dismissed"
 
-
+# Total không để charfield được phải để là số thực, có hóa đơn điện (số điện), nước (), phí quản lý
 class Receipt(BaseModel):
     title = models.CharField(max_length=255)
-    status = models.BooleanField(default=True)
+    total = models. CharField(max_length=255, null=True)
+    status = models.BooleanField(default=False)
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
@@ -78,7 +84,7 @@ class Receipt(BaseModel):
 
 class Survey(BaseModel):
     title = models.CharField(max_length=255)
-    content = RichTextField()
+    content = RichTextField(null=True)
     user = models.ManyToManyField(User)
 
     def __str__(self):
@@ -90,7 +96,7 @@ class Complaint(BaseModel):
     content = RichTextField()
     image = CloudinaryField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tag = models.ManyToManyField(Tag)
+    tag = models.ForeignKey(Tag, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.title
@@ -111,3 +117,4 @@ class Comment(Interaction):
 class Like(Interaction):
     class Meta:
         unique_together = ('complaint', 'user')
+

@@ -33,6 +33,7 @@ class ECabinetDetailSerializer(ECabinetSerializer):
 
 
 class UserSerializer(ImageSerializer):
+
     class Meta:
         model = User
         fields = '__all__'
@@ -43,25 +44,23 @@ class UserSerializer(ImageSerializer):
         }
 
 
-class RecieptSerializer(serializers.ModelSerializer):
+class ReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receipt
-        fields = ['title']
+        fields = ['title', 'created_date']
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['id', 'name']
+        fields = ['name']
 
-
-class RecieptDetailsSerializer(RecieptSerializer):
-    tag = TagSerializer()
+class ReceiptDetailSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many= True)
 
     class Meta:
-        model = RecieptSerializer.Meta.model
-        fields = RecieptSerializer.Meta.fields + ['tag']
-
+        model = ReceiptSerializer.Meta.model
+        fields = ReceiptSerializer.Meta.fields + ['tags', 'total']
 
 class CarCardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -72,7 +71,7 @@ class CarCardSerializer(serializers.ModelSerializer):
 class ComplaintSerializer(ImageSerializer):
     class Meta:
         model = Complaint
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'tag']
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -89,15 +88,9 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'status', 'e_cabinet']
 
 
-class ComplaintDetailSerializer(ComplaintSerializer):
-    tag = TagSerializer(many=True)
-
-    class Meta:
-        model = ComplaintSerializer.Meta.model
-        fields = ComplaintSerializer.Meta.fields + ['content', 'tag']
 
 
-class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
+class AuthenticatedComplaintDetailSerializer(ComplaintSerializer):
     liked = serializers.SerializerMethodField()
 
     def get_liked(self, complaint):
@@ -106,8 +99,8 @@ class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
             return complaint.like_set.filter(user=request.user, active=True).exists()
 
     class Meta:
-        model = ComplaintDetailSerializer.Meta.model
-        fields = ComplaintDetailSerializer.Meta.fields + ['liked']
+        model = ComplaintSerializer.Meta.model
+        fields = ComplaintSerializer.Meta.fields + ['liked']
 
 
 class SurveySerializer(serializers.ModelSerializer):

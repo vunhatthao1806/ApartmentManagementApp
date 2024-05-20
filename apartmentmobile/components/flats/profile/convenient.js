@@ -1,6 +1,6 @@
 import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
-import MyStyles from "../../styles/MyStyles";
-import Styles from "./Styles";
+import MyStyles from "../../../styles/MyStyles";
+import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
 
 const Convenient = ({ navigation }) => {

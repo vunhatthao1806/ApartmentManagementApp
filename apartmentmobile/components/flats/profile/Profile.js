@@ -1,37 +1,80 @@
 import { TouchableOpacity, View } from "react-native";
-import MyStyles from "../../styles/MyStyles";
+import MyStyles from "../../../styles/MyStyles";
 import { Avatar, Button, List } from "react-native-paper";
-import Styles from "./Styles";
-import { useContext } from "react";
-import Context from "../../configs/Context";
+import Styles from "../Styles";
+import { useContext, useEffect, useState } from "react";
+import Context from "../../../configs/Context";
+import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Profile = ({ navigation }) => {
   const [user, dispatch] = useContext(Context);
+  const userAvatar = user ? user.avatar : null;
   const logout = () => {
     dispatch({
       type: "logout",
     });
   };
+  const chooseAvatar = async () => {
+    let status = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") alert("Từ chối quyền truy cập");
+    else {
+      let res = await ImagePicker.launchImageLibraryAsync();
+      if (!res.canceled) {
+        // updateAvatar(res.uri);
+      }
+    }
+  };
+  const updateAvatar = async (imageUri) => {
+    try {
+      let accessToken = await AsyncStorage.getItem("access-token");
+      let formData = new FormData();
+      formData.append("avatar", {
+        uri: imageUri,
+        name: "avatar.jpg",
+        type: "image/jpg",
+      });
+
+      let res = await authAPI(accessToken).patch(
+        endpoints["current-user"],
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      dispatch({
+        type: "updateAvatar",
+        payload: { avatar: res.data.avatar }, // Giả sử server trả về đường dẫn mới của ảnh đại diện
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={MyStyles.container}>
       <View style={Styles.avatarbackground}>
         <Avatar.Image
           style={Styles.avatarprofile}
-          source={require("./avatar.jpg")}
+          source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
           size={150}
         />
-        <Button
-          icon="camera"
-          mode="contained"
-          style={{
-            width: 50,
-            position: "absolute",
-            top: 110,
-            left: 230,
-          }}
-          buttonColor="rgba(60, 32, 22, 1)"
-        >
-          +
-        </Button>
+        <TouchableOpacity onPress={chooseAvatar}>
+          <Button
+            icon="camera"
+            mode="contained"
+            style={{
+              width: 50,
+              position: "absolute",
+              top: 110,
+              left: 230,
+            }}
+            buttonColor="rgba(60, 32, 22, 1)"
+          >
+            +
+          </Button>
+        </TouchableOpacity>
       </View>
       <View style={{ marginTop: 100 }}>
         <List.Section>

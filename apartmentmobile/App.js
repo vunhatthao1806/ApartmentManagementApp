@@ -1,31 +1,33 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Profile from "./components/flats/Profile";
+import Profile from "./components/flats/profile/Profile";
 import Chat from "./components/flats/Chat";
 import { Icon } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
-import Complaint from "./components/flats/Complaint";
-import Notification from "./components/flats/Notification";
 import { createStackNavigator } from "@react-navigation/stack";
-import AccountInfo from "./components/flats/AccountInfo";
-import ChangePass from "./components/flats/ChangePass";
-import Cabinet from "./components/flats/Cabinet";
-import Payment from "./components/flats/Payment";
-import Survey from "./components/flats/Survey";
-import Carcard from "./components/flats/Carcard";
 import Context from "./configs/Context";
 import { useContext, useEffect, useReducer, useState } from "react";
 import MyUserReducer from "./reducers/MyUserReducer";
 import Login from "./components/users/Login";
-import Convenient from "./components/flats/convenient";
 import Logo from "./components/users/Logo";
+import "moment/locale/vi";
+import Convenient from "./components/flats/profile/convenient";
+import AccountInfo from "./components/flats/profile/AccountInfo";
+import ChangePass from "./components/flats/profile/ChangePass";
+import Payment from "./components/flats/convenient/Payment";
+import Survey from "./components/flats/convenient/Survey";
+import Carcard from "./components/flats/convenient/Carcard";
 
+import Complaint from "./components/flats/complaints/Complaint";
+import Notifiaction from "./components/flats/notifications/Notification";
+import ComplaintDetail from "./components/flats/complaints/ComplaintDetail";
+import Ecabinet from "./components/flats/convenient/ECabinet";
 const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         options={{ headerTitleAlign: "center" }}
-        name="Profile"
+        name="Tài khoản"
         component={Profile}
       />
       <Stack.Screen
@@ -50,7 +52,7 @@ const ProfileStack = () => {
       />
       <Stack.Screen
         name="Cabinet"
-        component={Cabinet}
+        component={Ecabinet}
         options={{ headerShown: true }}
       />
       <Stack.Screen
@@ -89,6 +91,22 @@ const LoginStack = ({ user }) => {
     </Stack.Navigator>
   );
 };
+const ComplaintStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ComplaintStack"
+        component={Complaint}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ComplaintDetail"
+        component={ComplaintDetail}
+        options={{ headerShown: true }}
+      />
+    </Stack.Navigator>
+  );
+};
 const Tab = createBottomTabNavigator();
 const MyTab = () => {
   return (
@@ -114,7 +132,7 @@ const MyTab = () => {
       />
       <Tab.Screen
         name="Notification"
-        component={Notification}
+        component={Notifiaction}
         options={{
           title: "Thông báo",
           tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
@@ -123,11 +141,12 @@ const MyTab = () => {
       />
       <Tab.Screen
         name="Compaint"
-        component={Complaint}
+        component={ComplaintStack}
         options={{
           title: "Phản ánh",
           tabBarIcon: () => <Icon source="newspaper" size={30} color="white" />,
           headerTitleAlign: "center",
+          headerShown: false,
         }}
       />
       <Tab.Screen

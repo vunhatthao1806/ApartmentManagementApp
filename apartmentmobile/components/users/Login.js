@@ -4,41 +4,45 @@ import Style from "./Style";
 import { Avatar, Button, TextInput } from "react-native-paper";
 import { useContext, useState } from "react";
 import Context from "../../configs/Context";
-import APIs, { endpoints } from "../../configs/APIs";
+import APIs, { authAPI, endpoints } from "../../configs/APIs";
+import qs from "qs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Login = () => {
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [user, dispatch] = useContext(Context);
   const login = async () => {
     try {
-      let res = await APIs.post(endpoints["login"], {
-        username: username,
-        password: password,
+      const data = qs.stringify({
+        grant_type: "password",
         client_id: "njQeHngjlC4qlGmjiLDmQ2dRnnRfsdHY3SPvrNrA",
         client_secret:
           "XKHvWtBtIhkaKM2pf3gdGVi0SWxKgdobW4ArAJ00fi7fiYLl7tPcYoZQ6fZoeKGkiAx04cHmSCq9aQJUbGyr8sKLAEPSJbZBFvLxngkdulMIZ4Y1X3JGrMdnQCEY4TKr",
-        grant_type: "password",
+        username: username,
+        password: password,
       });
+      const res = await APIs.post(endpoints["login"], data);
       console.info(res.data);
+      await AsyncStorage.setItem("access-token", res.data.access_token);
+      let user = await authAPI(res.data.access_token).get(
+        endpoints["current-user"]
+      );
+      dispatch({
+        type: "login",
+        payload: user.data,
+      });
     } catch (ex) {
-      console.error(ex);
+      console.error(
+        "Error response:",
+        ex.response ? ex.response.data : ex.message
+      );
+      Alert.alert("Cảnh báo", "Tên đăng nhập hoặc mật khẩu không hợp lệ!!!", [
+        {
+          text: "OK",
+          onPress: () => {},
+        },
+      ]);
     }
-    // console.info(res.data);
-    // if (username === "admin" && password === "123") {
-    //   dispatch({
-    //     type: "login",
-    //     payload: {
-    //       username: "admin",
-    //     },
-    //   });
-    // } else {
-    //   Alert.alert("Cảnh báo", "Tên đăng nhập hoặc mật khẩu không hợp lệ!!!", [
-    //     {
-    //       text: "OK",
-    //       onPress: () => {},
-    //     },
-    //   ]);
-    // }
   };
   return (
     <View style={MyStyles.container}>

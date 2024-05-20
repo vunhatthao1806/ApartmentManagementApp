@@ -45,4 +45,10 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
   },
+  accountinfoImage: {
+    marginTop: 20,
+    width: "40%",
+    height: "30%",
+    alignSelf: "center",
+  },
 });

@@ -51,4 +51,15 @@ export default StyleSheet.create({
     height: "30%",
     alignSelf: "center",
   },
+  input: {
+    width: "90%",
+    alignSelf: "center",
+    marginTop: 50,
+  },
+  imageOnTop: {
+    width: "100%",
+    height: 230,
+    borderBottomLeftRadius: 120,
+    borderBottomRightRadius: 120,
+  },
 });

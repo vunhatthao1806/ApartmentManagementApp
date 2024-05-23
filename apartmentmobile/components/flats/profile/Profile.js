@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import Context from "../../../configs/Context";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAPI, endpoints } from "../../../configs/APIs";
 const Profile = ({ navigation }) => {
   const [user, dispatch] = useContext(Context);
   const userAvatar = user ? user.avatar : null;
@@ -15,12 +16,13 @@ const Profile = ({ navigation }) => {
     });
   };
   const chooseAvatar = async () => {
-    let status = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") alert("Từ chối quyền truy cập");
     else {
       let res = await ImagePicker.launchImageLibraryAsync();
       if (!res.canceled) {
-        // updateAvatar(res.uri);
+        console.log(res.assets[0].uri);
+        updateAvatar(res.assets[0].uri);
       }
     }
   };
@@ -30,7 +32,7 @@ const Profile = ({ navigation }) => {
       let formData = new FormData();
       formData.append("avatar", {
         uri: imageUri,
-        name: "avatar.jpg",
+        name: "",
         type: "image/jpg",
       });
 

@@ -9,9 +9,7 @@ const AccountInfo = () => {
   const [user, dispatch] = useContext(Context);
   const userInfo = user;
   return (
-    <View
-      style={[MyStyles.container, { backgroundColor: "rgba(60, 32, 22, 0.5)" }]}
-    >
+    <View style={[MyStyles.container]}>
       <View>
         <Image
           style={Styles.accountinfoImage}
@@ -38,6 +36,27 @@ const AccountInfo = () => {
             justifyContent: "space-between",
             marginLeft: 10,
             marginRight: 10,
+            marginTop: 20,
+          }}
+        >
+          <Text style={{ fontSize: 20 }}>Tên tài khoản</Text>
+          <Text style={{ fontSize: 20 }}>{userInfo.username}</Text>
+        </View>
+        <View
+          style={{
+            marginTop: 5,
+            borderBottomWidth: 1,
+            borderBottomColor: "black",
+            width: "95%",
+            alignSelf: "center",
+          }}
+        ></View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginLeft: 10,
+            marginRight: 10,
             marginTop: 10,
           }}
         >
@@ -48,7 +67,7 @@ const AccountInfo = () => {
           style={{
             marginTop: 5,
             borderBottomWidth: 1,
-            borderBottomColor: "white",
+            borderBottomColor: "black",
             width: "95%",
             alignSelf: "center",
           }}
@@ -62,14 +81,14 @@ const AccountInfo = () => {
             marginTop: 20,
           }}
         >
-          <Text style={{ fontSize: 20 }}>Họ</Text>
+          <Text style={{ fontSize: 20 }}>Tên</Text>
           <Text style={{ fontSize: 20 }}>{userInfo.last_name}</Text>
         </View>
         <View
           style={{
             marginTop: 5,
             borderBottomWidth: 1,
-            borderBottomColor: "white",
+            borderBottomColor: "black",
             width: "95%",
             alignSelf: "center",
           }}
@@ -90,7 +109,7 @@ const AccountInfo = () => {
           style={{
             marginTop: 5,
             borderBottomWidth: 1,
-            borderBottomColor: "white",
+            borderBottomColor: "black",
             width: "95%",
             alignSelf: "center",
           }}
@@ -113,7 +132,7 @@ const AccountInfo = () => {
           style={{
             marginTop: 5,
             borderBottomWidth: 1,
-            borderBottomColor: "white",
+            borderBottomColor: "black",
             width: "95%",
             alignSelf: "center",
           }}

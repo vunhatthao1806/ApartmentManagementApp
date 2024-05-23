@@ -20,7 +20,7 @@ import Carcard from "./components/flats/convenient/Carcard";
 import Complaint from "./components/flats/complaints/Complaint";
 import Notifiaction from "./components/flats/notifications/Notification";
 import ComplaintDetail from "./components/flats/complaints/ComplaintDetail";
-import Ecabinet from "./components/flats/convenient/ECabinet";
+import Ecabinet from "./components/flats/convenient/Ecabinet";
 const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (

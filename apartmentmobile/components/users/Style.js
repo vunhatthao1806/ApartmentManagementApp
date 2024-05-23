@@ -43,4 +43,34 @@ export default StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  imageOnTop: {
+    width: "100%",
+    height: 280,
+    borderBottomLeftRadius: 120,
+    borderBottomRightRadius: 120,
+  },
+  containerLogin: {
+    flex: 1,
+    marginTop: 10,
+    marginLeft: 10,
+  },
+  titleLogin: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#212121",
+    alignSelf: "center",
+  },
+  textInput: {
+    marginBottom: 20,
+    backgroundColor: "rgba(60,32,22,0.5)",
+    marginRight: 20,
+    marginLeft: 20,
+  },
+  textLabel: {
+    color: "#CCCCCC",
+    fontSize: 20,
+  },
 });

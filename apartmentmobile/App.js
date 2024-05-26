@@ -20,7 +20,11 @@ import Carcard from "./components/flats/convenient/Carcard";
 import Complaint from "./components/flats/complaints/Complaint";
 import Notifiaction from "./components/flats/notifications/Notification";
 import ComplaintDetail from "./components/flats/complaints/ComplaintDetail";
-import Ecabinet from "./components/flats/convenient/Ecabinet";
+import Items from "./components/flats/convenient/Items";
+import ECabinet from "./components/flats/convenient/ECabinet";
+import CarcardDetail from "./components/flats/convenient/CarcarDetail";
+import CarcardRegister from "./components/flats/convenient/CarcardRegister";
+
 const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (
@@ -52,7 +56,12 @@ const ProfileStack = () => {
       />
       <Stack.Screen
         name="Cabinet"
-        component={Ecabinet}
+        component={ECabinet}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Items"
+        component={Items}
         options={{ headerShown: true }}
       />
       <Stack.Screen
@@ -63,6 +72,16 @@ const ProfileStack = () => {
       <Stack.Screen
         name="Carcard"
         component={Carcard}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="CarcardDetail"
+        component={CarcardDetail}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="CarcardRegister"
+        component={CarcardRegister}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>

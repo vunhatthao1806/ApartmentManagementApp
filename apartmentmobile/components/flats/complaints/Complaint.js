@@ -26,6 +26,20 @@ const Complaint = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
   const [showFullContent, setShowFullContent] = useState({});
+  const [tags, setTags] = useState([]);
+
+  const loadTags = async () => {
+    try {
+      let res = await APIs.get(endpoints["tags"]);
+      setTags(res.data);
+    } catch (ex) {
+      console.error(ex);
+    }
+  };
+
+  useEffect(() => {
+    loadTags();
+  }, []);
 
   const loadComplaints = async () => {
     try {
@@ -54,6 +68,7 @@ const Complaint = ({ navigation }) => {
   const search = (value, callback) => {
     callback(value);
   };
+  const ComplaintTags = tags.filter((t) => t.id >= 1 && t.id <= 3);
 
   return (
     <View style={[MyStyles.containercomplaint]}>
@@ -69,21 +84,19 @@ const Complaint = ({ navigation }) => {
           Tất cả
         </Chip>
 
-        {complaints === null ? (
+        {ComplaintTags === null ? (
           <ActivityIndicator />
         ) : (
           <>
-            {complaints.map((c) => (
+            {ComplaintTags.map((c) => (
               <Chip
-                mode={
-                  c.complaint_tag.id === complaint_tagId ? "flat" : "outlined"
-                }
+                mode={c.id === complaint_tagId ? "flat" : "outlined"}
                 key={c.id}
-                onPress={() => search(c.complaint_tag.id, setComplaint_tagId)}
+                onPress={() => search(c.id, setComplaint_tagId)}
                 style={Style.tags}
                 icon="shape-plus"
               >
-                {c.complaint_tag.name}
+                {c.name}
               </Chip>
             ))}
           </>

@@ -2,8 +2,12 @@ import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import MyStyles from "../../../styles/MyStyles";
 import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
+import { useContext } from "react";
+import Context from "../../../configs/Context";
 
 const Convenient = ({ navigation }) => {
+  const [user, dispatch] = useContext(Context);
+  const userAvatar = user ? user.avatar : null;
   return (
     <View style={MyStyles.container}>
       <View>
@@ -20,7 +24,9 @@ const Convenient = ({ navigation }) => {
           <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
-              source={require("./avatar.jpg")}
+              source={
+                userAvatar ? { uri: userAvatar } : require("./avatar.jpg")
+              }
               size={130}
             />
           </View>

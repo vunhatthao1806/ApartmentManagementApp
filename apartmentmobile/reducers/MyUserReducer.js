@@ -4,11 +4,6 @@ const MyUserReducer = (currentState, action) => {
       return action.payload;
     case "logout":
       return null;
-    case "updateAvatar":
-      return {
-        ...state,
-        avatar: action.payload.avatar,
-      };
   }
   return currentState;
 };

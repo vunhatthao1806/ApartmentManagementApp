@@ -54,12 +54,23 @@ export default StyleSheet.create({
   input: {
     width: "90%",
     alignSelf: "center",
-    marginTop: 50,
+    marginTop: 30,
   },
   imageOnTop: {
     width: "100%",
     height: 230,
     borderBottomLeftRadius: 120,
     borderBottomRightRadius: 120,
+  },
+  imageEca: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginLeft: 10,
+  },
+  textRight: {
+    alignSelf: "center",
+    marginRight: 10, // Adjust spacing as needed
+    fontSize: 16, // Adjust font size as needed
   },
 });

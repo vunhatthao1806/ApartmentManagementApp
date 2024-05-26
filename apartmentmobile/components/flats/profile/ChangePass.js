@@ -120,7 +120,7 @@ const ChangePass = () => {
             </HelperText>
             <Button
               loading={loading}
-              icon="account"
+              icon="lock"
               mode="contained"
               onPress={changepass}
               buttonColor="rgba(60,32,22,0.8)"

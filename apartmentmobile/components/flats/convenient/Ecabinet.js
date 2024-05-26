@@ -1,10 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import Style from "./Style";
 import { List } from "react-native-paper";
-import { authAPI, endpoints } from "../../../configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ScrollView } from "react-native";
+import { authAPI, endpoints } from "../../../configs/APIs";
+import moment from "moment";
+import Styles from "../Styles";
 
-const Ecabinet = () => {
+const ECabinet = ({ navigation }) => {
   const [ecabinets, setEcabinets] = useState([]);
   const loadEcabinets = async () => {
     try {
@@ -19,13 +22,40 @@ const Ecabinet = () => {
   useEffect(() => {
     loadEcabinets();
   }, []);
+  // Array of imported images
+  const imageArray = [
+    require("./imageEca/1.jpg"),
+    require("./imageEca/2.jpg"),
+    require("./imageEca/3.jpg"),
+  ];
 
+  const getRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * imageArray.length);
+    return imageArray[randomIndex];
+  };
   return (
     <ScrollView>
       {ecabinets.map((c) => (
-        <List.Item key={c.id} title={c.name} />
+        <View style={Style.ecabinetStyle}>
+          <TouchableOpacity
+            key={c.id}
+            onPress={() => navigation.navigate("Items", { ecabinetId: c.id })}
+          >
+            <List.Item
+              key={c.id}
+              title={c.name}
+              description={moment(c.created_date).format("DD/MM/YYYY")}
+              left={() => (
+                <Image style={Styles.imageEca} source={getRandomImage()} />
+              )}
+              right={() => (
+                <Text style={Styles.textRight}>SL: {c.count_items}</Text>
+              )}
+            />
+          </TouchableOpacity>
+        </View>
       ))}
     </ScrollView>
   );
 };
-export default Ecabinet;
+export default ECabinet;

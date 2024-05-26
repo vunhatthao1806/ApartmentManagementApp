@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import MyStyles from "../../../styles/MyStyles";
 import { Avatar, Button, List } from "react-native-paper";
 import Styles from "../Styles";
@@ -10,6 +10,7 @@ import { authAPI, endpoints } from "../../../configs/APIs";
 const Profile = ({ navigation }) => {
   const [user, dispatch] = useContext(Context);
   const userAvatar = user ? user.avatar : null;
+  const [avatar, setAvatar] = useState(null);
   const logout = () => {
     dispatch({
       type: "logout",
@@ -21,39 +22,40 @@ const Profile = ({ navigation }) => {
     else {
       let res = await ImagePicker.launchImageLibraryAsync();
       if (!res.canceled) {
-        console.log(res.assets[0].uri);
-        updateAvatar(res.assets[0].uri);
+        const image = res.assets[0];
+        setAvatar(image);
+        uploadImage(image);
       }
     }
   };
-  const updateAvatar = async (imageUri) => {
-    try {
-      let accessToken = await AsyncStorage.getItem("access-token");
-      let formData = new FormData();
-      formData.append("avatar", {
-        uri: imageUri,
-        name: "",
-        type: "image/jpg",
+  const uploadImage = async (image) => {
+    const filename = image.uri.split("/").pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const fileType = match ? `image/${match[1]}` : `image`;
+    if (avatar) {
+      const form = new FormData();
+      form.append("avatar", {
+        uri: image.uri,
+        type: fileType,
+        name: filename,
       });
-
-      let res = await authAPI(accessToken).patch(
-        endpoints["current-user"],
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      dispatch({
-        type: "updateAvatar",
-        payload: { avatar: res.data.avatar }, // Giả sử server trả về đường dẫn mới của ảnh đại diện
-      });
-    } catch (error) {
-      console.error(error);
+      try {
+        let accessToken = await AsyncStorage.getItem("access-token");
+        let res = await authAPI(accessToken).patch(
+          endpoints["current-user"],
+          form,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        Alert.alert("Thông báo", "Cập nhật ảnh thành công!!!");
+      } catch (ex) {
+        console.error(ex);
+      }
     }
   };
-
   return (
     <View style={MyStyles.container}>
       <View style={Styles.avatarbackground}>

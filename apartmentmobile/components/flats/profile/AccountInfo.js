@@ -125,7 +125,7 @@ const AccountInfo = () => {
         >
           <Text style={{ fontSize: 20 }}>Ngày tham gia</Text>
           <Text style={{ fontSize: 20 }}>
-            {moment(userInfo.date_joined).format(" Do MMMM YYYY")}
+            {moment(userInfo.date_joined).format("DD/MM/YYYY")}
           </Text>
         </View>
         <View

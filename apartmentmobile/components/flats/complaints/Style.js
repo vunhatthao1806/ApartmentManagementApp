@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import { Line } from "react-native-svg";
 
 export default StyleSheet.create({
   searchbar: {

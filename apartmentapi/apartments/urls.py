@@ -13,6 +13,7 @@ r.register('items', views.ItemViewSet, 'items')
 r.register('comments', views.CommentViewSet, 'comments')
 r.register('surveys', views.SurveyViewSet, 'surveys')
 r.register('admins', views.AdminViewSet, 'admins'),
+r.register('tags', views.TagViewSet, 'tags'),
 r.register('complaints', views.ComplaintViewSet, 'complaints')
 urlpatterns = [path('admin/', admin_site.urls),
                path('', include(r.urls)), ]

@@ -9,8 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-# client_id: mgnks8ZaMQdWmcxylI8oq95KxbpyRlwUjqdRYasB
-# client_secret: 2ndZOCWCz7if7brMkhov6bSUIsvlgXINorFybzCXoXJeiZloXICNCyEQlMldEk2VApDC5eR3Mniz9yh7daMjUnN0awLWQB4y00LCwVmXrtGlrUi1HlJ1BT4KdQJrZEp4
+# client_id: njQeHngjlC4qlGmjiLDmQ2dRnnRfsdHY3SPvrNrA
+# client_secret: XKHvWtBtIhkaKM2pf3gdGVi0SWxKgdobW4ArAJ00fi7fiYLl7tPcYoZQ6fZoeKGkiAx04cHmSCq9aQJUbGyr8sKLAEPSJbZBFvLxngkdulMIZ4Y1X3JGrMdnQCEY4TKr
 
 from pathlib import Path
 
@@ -39,7 +39,7 @@ SECRET_KEY = 'django-insecure-#19aei$1*2mjne7n-3jpk)h%6q=8(&ozbvbq$iv3%5ti840nj!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.7']
 
 # Application definition
 

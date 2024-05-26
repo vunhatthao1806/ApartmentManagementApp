@@ -14,6 +14,9 @@ class EcabinetOwner(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, ecabinet):
         return super().has_permission(request, view) and request.user == ecabinet.user
 
+class CarcardOwner(permissions.IsAuthenticated):
+    def has_object_permission(self, request, view, carcard):
+        return super().has_permission(request, view) and request.user == carcard.user
 
 class AdminOwner(permissions.IsAdminUser):
     def has_object_permission(self, request, view, ecabinet):

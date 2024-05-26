@@ -38,13 +38,14 @@ class Flat(models.Model):
 
 
 class CarCard(BaseModel):
-    type = models.CharField(max_length=100, unique=True)
-    number_plate = models.CharField(max_length=20)
+    type = models.CharField(max_length=100)
+    number_plate = models.CharField(max_length=20, unique= True)
     image_mrc_m1 = CloudinaryField(null=True)
     image_mrc_m2 = CloudinaryField(null=True)
     image_idcard_m1 = CloudinaryField(null=True)
     image_idcard_m2 = CloudinaryField(null=True)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null= True)
 
     def __str__(self):
         return self.number_plate
@@ -62,7 +63,7 @@ class Item(BaseModel):
     status = models.BooleanField()
     name = models.CharField(max_length=255)
     e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
-
+    status_tag = models.ForeignKey('Tag', on_delete=models.PROTECT, null=True)
     def __str__(self):
         return self.name
 
@@ -96,7 +97,8 @@ class Complaint(BaseModel):
     content = RichTextField()
     image = CloudinaryField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.PROTECT, null=True)
+    status_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='status_tag')
+    complaint_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='complaint_tag')
 
     def __str__(self):
         return self.title

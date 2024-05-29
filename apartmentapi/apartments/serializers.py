@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apartments.models import User, Receipt, Tag, CarCard, Complaint, Comment, Item, Flat, ECabinet
+from apartments.models import User, Receipt, Tag, CarCard, Complaint, Comment, Item, Flat, ECabinet, PaymentDetail
 import djf_surveys.models
 
 
@@ -10,7 +10,6 @@ class ImageSerializer(serializers.ModelSerializer):
         if instance.avatar:
             rep['avatar'] = instance.avatar.url
         return rep
-
 
 
 class FlatSerializer(serializers.ModelSerializer):
@@ -28,8 +27,9 @@ class ECabinetSerializer(serializers.ModelSerializer):
 
     def get_count_items(self, obj):
         return obj.item_set.count()
-class UserSerializer(ImageSerializer):
 
+
+class UserSerializer(ImageSerializer):
     class Meta:
         model = User
         fields = '__all__'
@@ -43,20 +43,35 @@ class UserSerializer(ImageSerializer):
 class ReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receipt
-        fields = ['title', 'created_date']
+        fields = ['id', 'title', 'created_date']
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['id','name']
+        fields = ['id', 'name']
+
 
 class ReceiptDetailSerializer(serializers.ModelSerializer):
     tag = TagSerializer()
+    flat = FlatSerializer()
 
     class Meta:
         model = ReceiptSerializer.Meta.model
-        fields = ReceiptSerializer.Meta.fields + ['tag', 'total']
+        fields = ReceiptSerializer.Meta.fields + ['tag', 'total', 'flat']
+
+
+class PaymentDetailSerializer(ImageSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
+    class Meta:
+        model = PaymentDetail
+        fields = 'image'
+
 
 class CarCardSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
@@ -68,6 +83,7 @@ class CarCardSerializer(serializers.ModelSerializer):
                 req[field] = getattr(instance, field).url
 
         return req
+
     class Meta:
         model = CarCard
         fields = ['id', 'type', 'number_plate', 'image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2']
@@ -97,6 +113,7 @@ class ComplaintDetailSerializer(ComplaintSerializer):
         model = ComplaintSerializer.Meta.model
         fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
 
+
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
@@ -112,12 +129,12 @@ class ItemSerializer(serializers.ModelSerializer):
             req['image'] = instance.image.url
 
         return req
+
     status_tag = TagSerializer()
 
     class Meta:
         model = Item
         fields = ['id', 'name', 'status', 'e_cabinet', 'status_tag', 'image']
-
 
 
 class AuthenticatedComplaintDetailSerializer(ComplaintSerializer):
@@ -143,3 +160,16 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = djf_surveys.models.Question
         fields = ['id', 'label', 'type_field', 'choices']
+
+
+class AddComplaintSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
+
+    class Meta:
+        model = Complaint
+        fields = ['id', 'title', 'created_date', 'content', 'status_tag', 'complaint_tag', 'image']

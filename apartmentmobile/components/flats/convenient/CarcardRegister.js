@@ -126,7 +126,7 @@ const CarcardRegister = () => {
                   {f.label}
                 </Text>
               }
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 10, borderRadius: 50 }}
               placeholderTextColor="white"
               textColor="black"
               cursorColor="black"

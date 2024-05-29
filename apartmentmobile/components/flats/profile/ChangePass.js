@@ -105,13 +105,12 @@ const ChangePass = () => {
                   </Text>
                 }
                 secureTextEntry={f.secureTextEntry}
-                style={{ marginTop: 10 }}
+                style={{ marginTop: 10, backgroundColor: "rgba(60,32,22,0.5)" }}
                 right={<TextInput.Icon icon={f.icon} onPress={f.onPressIcon} />}
                 placeholderTextColor="white"
                 textColor="black"
                 cursorColor="black"
                 underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
-                backgroundColor="rgba(60,32,22,0.5)"
               />
             ))}
 

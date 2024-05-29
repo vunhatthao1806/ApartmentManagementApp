@@ -1,27 +1,51 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Keyboard,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { authAPI, endpoints } from "../../../configs/APIs";
 import MyStyles from "../../../styles/MyStyles";
 import Style from "./Style";
-import { Icon, List } from "react-native-paper";
+import { ActivityIndicator, Icon, List, Searchbar } from "react-native-paper";
+import { isCloseToBottom } from "../../utils/Utils";
 
-const Payment = () => {
+const Payment = ({ navigation }) => {
   const [status, setStatus] = useState("False");
   const [receipts, setReceipts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [q, setQ] = useState("");
   const loadReceipts = async () => {
-    try {
-      let accessToken = await AsyncStorage.getItem("access-token");
-      let url = `${endpoints["receipts"]}?status=${status}`;
-      let res = await authAPI(accessToken).get(url);
-      setReceipts(res.data);
-    } catch (ex) {
-      console.error(ex);
+    if (page > 0) {
+      setLoading(true);
+      try {
+        let accessToken = await AsyncStorage.getItem("access-token");
+        let url = `${endpoints["receipts"]}?status=${status}&q=${q}&page=${page}`;
+
+        let res = await authAPI(accessToken).get(url);
+
+        if (res.data.next === null) setPage(0);
+
+        if (page === 1) setReceipts(res.data.results);
+        else
+          setReceipts((current) => {
+            return [...current, ...res.data.results];
+          });
+      } catch (ex) {
+        console.error(ex);
+      } finally {
+        setLoading(false);
+      }
     }
   };
   useEffect(() => {
     loadReceipts();
-  }, [status]);
+  }, [status, page, q]);
   const getIcon = (tagName) => {
     switch (tagName.toLowerCase()) {
       case "điện":
@@ -38,30 +62,62 @@ const Payment = () => {
   const getBackgroundColor = (tagName) => {
     switch (tagName.toLowerCase()) {
       case "điện":
-        return { backgroundColor: "yellow" };
+        return { backgroundColor: "#C63D2F" };
       case "nước":
-        return { backgroundColor: "blue" };
+        return { backgroundColor: "#0766AD" };
       case "phí quản lý":
-        return { backgroundColor: "green" };
+        return { backgroundColor: "#A3B763" };
       default:
         return { backgroundColor: "white" };
     }
   };
+  const handlePress = (r) => {
+    if (status === "False") {
+      navigation.navigate("PaymentDetail", { receiptid: r.id });
+    } else {
+      navigation.navigate("PaymentHistory", { receiptid: r.id });
+    }
+  };
+  const loadMore = ({ nativeEvent }) => {
+    if (!loading && page > 0 && isCloseToBottom(nativeEvent)) {
+      setPage(page + 1);
+    }
+  };
+  const setStatusAndResetPage = (newStatus) => {
+    setStatus(newStatus);
+    setPage(1);
+    setReceipts([]);
+  };
+  const search = (value, callback) => {
+    setPage(1);
+    callback(value);
+  };
   return (
-    <ScrollView>
-      <View style={MyStyles.container}>
-        <View style={Style.tiltepayment}>
-          <TouchableOpacity onPress={() => setStatus("False")}>
-            <Text style={Style.titletextpayment}>Hóa Đơn</Text>
-          </TouchableOpacity>
+    <View style={MyStyles.container}>
+      {loading && <ActivityIndicator />}
+      <View style={Style.tiltepayment}>
+        <TouchableOpacity onPress={() => setStatusAndResetPage("False")}>
+          <Text style={Style.titletextpayment}>Hóa Đơn</Text>
+        </TouchableOpacity>
 
-          <Text style={{ borderLeftWidth: 2 }}></Text>
-          <TouchableOpacity onPress={() => setStatus("True")}>
-            <Text style={Style.titletextpayment}>Lịch sử</Text>
-          </TouchableOpacity>
+        <Text style={{ borderLeftWidth: 2 }}></Text>
+        <TouchableOpacity onPress={() => setStatusAndResetPage("True")}>
+          <Text style={Style.titletextpayment}>Lịch sử</Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View>
+          <Searchbar
+            placeholder="Nhập từ khóa"
+            style={{ margin: 5, backgroundColor: "#615EFC" }}
+            onChangeText={(q) => search(q, setQ)}
+            value={q}
+          />
         </View>
+      </TouchableWithoutFeedback>
+      <ScrollView onScroll={loadMore}>
         {receipts.map((r) => (
-          <TouchableOpacity>
+          <TouchableOpacity key={r.id} onPress={() => handlePress(r)}>
             <View style={[Style.ecabinetStyle, getBackgroundColor(r.tag.name)]}>
               <List.Item
                 key={r.id}
@@ -73,8 +129,8 @@ const Payment = () => {
             </View>
           </TouchableOpacity>
         ))}
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 export default Payment;

@@ -73,4 +73,14 @@ export default StyleSheet.create({
     color: "#CCCCCC",
     fontSize: 20,
   },
+  buttonLogin: {
+    width: "80%",
+    height: 60,
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 20,
+    marginTop: 21,
+  },
 });

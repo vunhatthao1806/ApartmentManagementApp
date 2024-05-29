@@ -1,4 +1,5 @@
 import {
+  Platform,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -9,6 +10,7 @@ import { useEffect, useState } from "react";
 
 import {
   ActivityIndicator,
+  AnimatedFAB,
   Avatar,
   Card,
   Chip,
@@ -20,13 +22,24 @@ import moment from "moment";
 import RenderHTML from "react-native-render-html";
 import MyStyles from "../../../styles/MyStyles";
 import APIs, { endpoints } from "../../../configs/APIs";
-const Complaint = ({ navigation }) => {
+import { isCloseToBottom } from "../../utils/Utils";
+const Complaint = ({
+  navigation,
+  animateFrom,
+  visible,
+  label,
+  style,
+  iconMode,
+  animateValue,
+}) => {
   const [complaints, setComplaints] = useState([]);
   const [complaint_tagId, setComplaint_tagId] = useState("");
   const [loading, setLoading] = useState(false);
   const { width } = useWindowDimensions();
   const [showFullContent, setShowFullContent] = useState({});
   const [tags, setTags] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isExtended, setIsExtended] = useState(true);
 
   const loadTags = async () => {
     try {
@@ -42,13 +55,23 @@ const Complaint = ({ navigation }) => {
   }, []);
 
   const loadComplaints = async () => {
-    try {
-      let url = `${endpoints["complaints"]}?complaint_tag_id=${complaint_tagId}`;
+    if (page > 0) {
+      setLoading(true);
+      let url = `${endpoints["complaints"]}?complaint_tag_id=${complaint_tagId}&&page=${page}`;
+      try {
+        let res = await APIs.get(url);
+        if (page === 1) setComplaints(res.data.results);
+        else
+          setComplaints((current) => {
+            return [...current, ...res.data.results]; //chen them du lieu vao trang hien tai
+          });
 
-      let res = await APIs.get(url);
-      setComplaints(res.data);
-    } catch (ex) {
-      console.error(ex);
+        if (!res.data.next) setPage(0);
+      } catch (ex) {
+        console.error(ex);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -63,11 +86,27 @@ const Complaint = ({ navigation }) => {
 
   useEffect(() => {
     loadComplaints();
-  }, [complaint_tagId]);
+  }, [complaint_tagId, page]);
 
   const search = (value, callback) => {
+    setPage(1);
     callback(value);
   };
+
+  const isIOS = Platform.OS === "ios";
+
+  const Scroll = ({ nativeEvent }) => {
+    const currentScrollPosition =
+      Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+    setIsExtended(currentScrollPosition <= 0);
+
+    if (!loading && page > 0 && isCloseToBottom(nativeEvent)) {
+      setPage(page + 1);
+    }
+  };
+
+  const fabStyle = { [animateFrom]: 20 };
   const ComplaintTags = tags.filter((t) => t.id >= 1 && t.id <= 3);
 
   return (
@@ -103,7 +142,7 @@ const Complaint = ({ navigation }) => {
         )}
       </View>
 
-      <ScrollView>
+      <ScrollView onScroll={Scroll}>
         {complaints === null ? (
           <ActivityIndicator />
         ) : (
@@ -183,6 +222,16 @@ const Complaint = ({ navigation }) => {
           </>
         )}
       </ScrollView>
+      <AnimatedFAB
+        icon={"plus"}
+        label={"Add complaint"}
+        extended={isExtended}
+        onPress={() => navigation.navigate("AddComplaint")}
+        visible={visible}
+        animateFrom={"right"}
+        iconMode={"static"}
+        style={[Style.fabStyle, style, fabStyle]}
+      />
     </View>
   );
 };

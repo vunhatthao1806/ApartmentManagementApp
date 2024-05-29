@@ -39,6 +39,9 @@ const Profile = ({ navigation }) => {
         type: fileType,
         name: filename,
       });
+      console.log(image.uri);
+      console.log(fileType);
+      console.log(filename);
       try {
         let accessToken = await AsyncStorage.getItem("access-token");
         let res = await authAPI(accessToken).patch(

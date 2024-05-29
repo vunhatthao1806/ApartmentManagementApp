@@ -10,7 +10,6 @@ import moment from "moment";
 const CarcardDetail = ({ route }) => {
   const [carcard, setCarcard] = useState([]);
   const carcardid = route.params?.carcardid;
-  console.log(carcardid);
   const loadCarcard = async () => {
     try {
       let accessToken = await AsyncStorage.getItem("access-token");

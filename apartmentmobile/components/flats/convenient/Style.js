@@ -68,8 +68,8 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     marginTop: 10,
-    marginBottom: 20,
-    backgroundColor: "rgba(60,32,22,0.2)",
+    marginBottom: 5,
+    backgroundColor: "#96B6C5",
     marginLeft: 5,
     marginRight: 5,
     borderRadius: 10,
@@ -77,5 +77,30 @@ export default StyleSheet.create({
   titletextpayment: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  backgroundtranfer: {
+    borderWidth: 1,
+    width: 350,
+    height: 400,
+    alignSelf: "center",
+    marginTop: 120,
+    backgroundColor: "#F1E5D1",
+    borderRadius: 10,
+  },
+  uploadImage: {
+    width: 200,
+    height: 200,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    alignSelf: "center",
+    margin: 20,
+  },
+  iconupimage: {
+    alignSelf: "center",
+    marginTop: 60,
+  },
+  textupload: {
+    textAlign: "center",
+    alignItems: "center",
   },
 });

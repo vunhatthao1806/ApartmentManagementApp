@@ -15,5 +15,8 @@ r.register('surveys', views.SurveyViewSet, 'surveys')
 r.register('admins', views.AdminViewSet, 'admins'),
 r.register('tags', views.TagViewSet, 'tags'),
 r.register('complaints', views.ComplaintViewSet, 'complaints')
+r.register('payments', views.PaymentViewSet, 'payments'),
+r.register('paymentdetails', views.PaymentDetailViewSet, 'paymentdetails'),
+r.register('addcomplaints', views.AddComplaintViewSet, 'addcomplaints')
 urlpatterns = [path('admin/', admin_site.urls),
                path('', include(r.urls)), ]

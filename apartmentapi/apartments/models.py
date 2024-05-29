@@ -73,15 +73,19 @@ class Item(BaseModel):
 # Total không để charfield được phải để là số thực, có hóa đơn điện (số điện), nước (), phí quản lý
 class Receipt(BaseModel):
     title = models.CharField(max_length=255)
-    total = models. CharField(max_length=255, null=True)
+    total = models.IntegerField(null=True)
     status = models.BooleanField(default=False)
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    order_id = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return self.title
 
+class PaymentDetail(BaseModel):
+    image= CloudinaryField()
+    receipt = models.OneToOneField(Receipt, on_delete=models.CASCADE)
 
 class Survey(BaseModel):
     title = models.CharField(max_length=255)

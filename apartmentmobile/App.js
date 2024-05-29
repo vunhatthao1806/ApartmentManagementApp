@@ -3,7 +3,10 @@ import Profile from "./components/flats/profile/Profile";
 import Chat from "./components/flats/Chat";
 import { Icon } from "react-native-paper";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from "@react-navigation/stack";
 import Context from "./configs/Context";
 import { useContext, useEffect, useReducer, useState } from "react";
 import MyUserReducer from "./reducers/MyUserReducer";
@@ -24,11 +27,19 @@ import Items from "./components/flats/convenient/Items";
 import ECabinet from "./components/flats/convenient/ECabinet";
 import CarcardDetail from "./components/flats/convenient/CarcarDetail";
 import CarcardRegister from "./components/flats/convenient/CarcardRegister";
+import PaymentDetail from "./components/flats/convenient/PaymentDetail";
+import PaymentHistory from "./components/flats/convenient/PaymentHistory";
+import AddComplaint from "./components/flats/complaints/AddComplaint";
+import TranferPayment from "./components/flats/convenient/TranferPayment";
 
 const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      }}
+    >
       <Stack.Screen
         options={{ headerTitleAlign: "center" }}
         name="Tài khoản"
@@ -84,6 +95,21 @@ const ProfileStack = () => {
         component={CarcardRegister}
         options={{ headerShown: true }}
       />
+      <Stack.Screen
+        name="PaymentDetail"
+        component={PaymentDetail}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="PaymentHistory"
+        component={PaymentHistory}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="TranferPayment"
+        component={TranferPayment}
+        options={{ headerShown: true }}
+      />
     </Stack.Navigator>
   );
 };
@@ -112,15 +138,26 @@ const LoginStack = ({ user }) => {
 };
 const ComplaintStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      }}
+    >
       <Stack.Screen
         name="ComplaintStack"
         component={Complaint}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="ComplaintDetail"
         component={ComplaintDetail}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="AddComplaint"
+        component={AddComplaint}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -132,7 +169,7 @@ const MyTab = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: "rgba(60, 32, 22, 1)",
+          backgroundColor: "#74512D",
           width: "97%",
           marginLeft: 6,
           borderTopRightRadius: 10,

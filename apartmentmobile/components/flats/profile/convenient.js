@@ -13,15 +13,6 @@ const Convenient = ({ navigation }) => {
       <View>
         <ImageBackground style={Styles.image} source={require("./home.jpg")}>
           <View>
-            <Searchbar
-              style={Styles.searchbar}
-              placeholder="Tìm kiếm"
-              iconColor="white"
-              placeholderTextColor="white"
-              color="white"
-            />
-          </View>
-          <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
               source={

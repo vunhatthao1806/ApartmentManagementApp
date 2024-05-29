@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "972058862025",
+    "project_id": "apartmentchatapp",
+    "storage_bucket": "apartmentchatapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972058862025:android:c45c027a35fcb979f00818",
+        "android_client_info": {
+          "package_name": "com.apartmentmobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABFfw5E0d2aFO1QkDpHMtcJKPoCq8Nk-c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

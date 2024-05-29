@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-const BASE_URL = "http://192.168.1.7:8000/";
+const BASE_URL = "http://192.168.1.8:8000/";
 export const endpoints = {
   login: "/o/token/",
   "current-user": "/users/current-user/",
@@ -17,6 +17,10 @@ export const endpoints = {
   "carcard-detail": (carcardid) => `/carcards/${carcardid}/`,
   tags: "/tags/",
   receipts: "/receipts/",
+  "receipt-detail": (receiptid) => `/receipts/${receiptid}`,
+  "create-payment": "/payments/create-payment/",
+  add_complaint: "/addcomplaints/",
+  tranferpayment: "/paymentdetails/",
 };
 export const authAPI = (accessToken) =>
   axios.create({

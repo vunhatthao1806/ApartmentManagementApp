@@ -25,14 +25,6 @@ export default StyleSheet.create({
     width: "100%",
     height: 200,
   },
-  searchbar: {
-    position: "absolute",
-    width: 300,
-    top: 70,
-    left: 60,
-    height: 60,
-    backgroundColor: "rgba(60, 32, 22, 0.8)",
-  },
   imagecontainer: {
     position: "relative",
   },

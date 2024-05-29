@@ -59,7 +59,6 @@ const ComplaintDetail = ({ route }) => {
   const loadLikeCount = async () => {
     try {
       let res = await APIs.get(endpoints["get_likes"](complaintId));
-      // console.log('loadLikeCount response:', res.data);
       setLikeCount(res.data);
     } catch (ex) {
       console.error(ex);

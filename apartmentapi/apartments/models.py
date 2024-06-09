@@ -86,7 +86,8 @@ class Receipt(BaseModel):
 class PaymentDetail(BaseModel):
     image= CloudinaryField()
     receipt = models.OneToOneField(Receipt, on_delete=models.CASCADE)
-
+    def __str__(self):
+        return self.receipt.title
 class Survey(BaseModel):
     title = models.CharField(max_length=255)
     content = RichTextField(null=True)

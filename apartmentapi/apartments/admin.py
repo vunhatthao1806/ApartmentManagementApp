@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item
+from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item, PaymentDetail
 from django.utils.html import mark_safe
 from oauth2_provider.models import Application, AccessToken, Grant, IDToken, RefreshToken
 from djf_surveys.models import Answer, Question, Survey, UserAnswer
@@ -87,3 +87,4 @@ admin_site.register(Answer)
 admin_site.register(Question)
 admin_site.register(Survey)
 admin_site.register(UserAnswer)
+admin_site.register(PaymentDetail)

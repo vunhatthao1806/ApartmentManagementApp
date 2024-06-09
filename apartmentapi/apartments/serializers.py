@@ -70,7 +70,7 @@ class PaymentDetailSerializer(ImageSerializer):
         return req
     class Meta:
         model = PaymentDetail
-        fields = 'image'
+        fields = ['image']
 
 
 class CarCardSerializer(serializers.ModelSerializer):

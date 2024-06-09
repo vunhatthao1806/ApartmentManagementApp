@@ -251,14 +251,13 @@ class TagViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = serializers.TagSerializer
 
 class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView):
-    queryset = PaymentDetail.objects.all()
-    serializers_class = serializers.PaymentDetailSerializer
-    permission_classes = permissions.IsAuthenticated()
-
+    serializer_class = serializers.PaymentDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            payment_detail = serializer.save()
+            receipt_id = request.query_params.get('receipt_id')
+            payment_detail = serializer.save(receipt_id=receipt_id)
             # Cập nhật trạng thái của Receipt
             receipt = payment_detail.receipt
             receipt.status = True
@@ -266,6 +265,7 @@ class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView):
             return Response({'message': 'Payment detail created and receipt status updated successfully.'},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class PaymentViewSet(viewsets.ViewSet):
     def get_permissions(self):
         if self.action in ['create-payment']:

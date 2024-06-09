@@ -77,7 +77,9 @@ const PaymentDetail = ({ route, navigation }) => {
             </Button>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate("TranferPayment")}
+            onPress={() =>
+              navigation.navigate("TranferPayment", { receiptid: receiptid })
+            }
           >
             <Button
               mode="contained"

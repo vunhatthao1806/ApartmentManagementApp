@@ -21,7 +21,6 @@ import Survey from "./components/flats/convenient/Survey";
 import Carcard from "./components/flats/convenient/Carcard";
 
 import Complaint from "./components/flats/complaints/Complaint";
-import Notifiaction from "./components/flats/notifications/Notification";
 import ComplaintDetail from "./components/flats/complaints/ComplaintDetail";
 import Items from "./components/flats/convenient/Items";
 import ECabinet from "./components/flats/convenient/ECabinet";
@@ -183,15 +182,6 @@ const MyTab = () => {
         options={{
           title: "Tin nhắn",
           tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
-          headerTitleAlign: "center",
-        }}
-      />
-      <Tab.Screen
-        name="Notification"
-        component={Notifiaction}
-        options={{
-          title: "Thông báo",
-          tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
           headerTitleAlign: "center",
         }}
       />

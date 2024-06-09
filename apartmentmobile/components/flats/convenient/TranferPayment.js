@@ -6,12 +6,14 @@ import { Button, Icon, Text } from "react-native-paper";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../configs/APIs";
-
-const TranferPayment = () => {
+import * as ImagePicker from "expo-image-picker";
+const TranferPayment = ({ route }) => {
   const [image, setImage] = useState();
   const [loading, setLoading] = useState(false);
+  const receiptid = route.params?.receiptid;
+  console.log(receiptid);
   const chooseImage = async () => {
-    let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    let { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
     if (status !== "granted") alert("Từ chối quyền truy cập");
     else {
       let res = await ImagePicker.launchImageLibraryAsync();
@@ -27,7 +29,7 @@ const TranferPayment = () => {
     const fileType = match ? `image/${match[1]}` : `image`;
     if (image) {
       const form = new FormData();
-      form.append("avatar", {
+      form.append("image", {
         uri: image.uri,
         type: fileType,
         name: filename,
@@ -35,20 +37,20 @@ const TranferPayment = () => {
       console.log(image.uri);
       console.log(fileType);
       console.log(filename);
+      setLoading(true);
       try {
         let accessToken = await AsyncStorage.getItem("access-token");
-        let res = await authAPI(accessToken).patch(
-          endpoints["tranferpayment"],
-          form,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        let url = `${endpoints["tranferpayment"]}?receipt_id=${receiptid}`;
+        let res = await authAPI(accessToken).post(url, form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         Alert.alert("Thông báo", "Xác nhận thành công!!!");
       } catch (ex) {
         console.error(ex);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -58,7 +60,12 @@ const TranferPayment = () => {
         <View style={Style.uploadImage}>
           <TouchableOpacity onPress={chooseImage}>
             {image ? (
-              <Image source={{ uri: image.uri }} />
+              <Image
+                source={{ uri: image.uri }}
+                width={"100%"}
+                height={"100%"}
+                borderRadius={10}
+              />
             ) : (
               <View>
                 <View style={Style.iconupimage}>
@@ -74,7 +81,7 @@ const TranferPayment = () => {
             )}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={confirm}>
           <Button
             mode="contained"
             style={{ width: "90%", alignSelf: "center" }}

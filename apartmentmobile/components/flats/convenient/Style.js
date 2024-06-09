@@ -88,12 +88,13 @@ export default StyleSheet.create({
     borderRadius: 10,
   },
   uploadImage: {
-    width: 200,
-    height: 200,
+    width: 300,
+    height: 300,
     borderWidth: 1,
     borderStyle: "dashed",
     alignSelf: "center",
     margin: 20,
+    borderRadius: 10,
   },
   iconupimage: {
     alignSelf: "center",
@@ -102,5 +103,9 @@ export default StyleSheet.create({
   textupload: {
     textAlign: "center",
     alignItems: "center",
+  },
+  search: {
+    margin: 8,
+    backgroundColor: "#B7B597",
   },
 });

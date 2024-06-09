@@ -64,7 +64,7 @@ const Payment = ({ navigation }) => {
       case "điện":
         return { backgroundColor: "#C63D2F" };
       case "nước":
-        return { backgroundColor: "#0766AD" };
+        return { backgroundColor: "#3ABEF9" };
       case "phí quản lý":
         return { backgroundColor: "#A3B763" };
       default:
@@ -109,7 +109,7 @@ const Payment = ({ navigation }) => {
         <View>
           <Searchbar
             placeholder="Nhập từ khóa"
-            style={{ margin: 5, backgroundColor: "#615EFC" }}
+            style={Style.search}
             onChangeText={(q) => search(q, setQ)}
             value={q}
           />

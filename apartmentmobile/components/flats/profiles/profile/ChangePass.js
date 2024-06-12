@@ -8,11 +8,12 @@ import {
   Image,
 } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
-import { authAPI, endpoints } from "../../../configs/APIs";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MyStyles from "../../../styles/MyStyles";
+import MyStyles from "../../../../styles/MyStyles";
 import { useState } from "react";
-import Styles from "../Styles";
+import Styles from "../../Styles";
+import { authAPI, endpoints } from "../../../../configs/APIs";
 
 const ChangePass = () => {
   const [usercurrent, setCurrentUser] = useState({});
@@ -91,7 +92,7 @@ const ChangePass = () => {
         >
           <Image
             style={Styles.imageOnTop}
-            source={require("../../users/apartment.webp")}
+            source={require("../../../users/apartment.webp")}
           />
           <View style={Styles.input}>
             {fields.map((f) => (

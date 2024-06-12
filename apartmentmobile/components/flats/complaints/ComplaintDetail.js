@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Alert,
   Image,
   ScrollView,
   Text,
@@ -13,7 +14,10 @@ import {
   Button,
   Card,
   Chip,
+  IconButton,
   List,
+  Menu,
+  PaperProvider,
   TextInput,
 } from "react-native-paper";
 import Style from "./Style";
@@ -23,7 +27,7 @@ import RenderHTML from "react-native-render-html";
 import { isCloseToBottom } from "../../utils/Utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ComplaintDetail = ({ route }) => {
+const ComplaintDetail = ({ route, navigation }) => {
   const [complaint, setComplaint] = useState(null);
   const [comments, setComments] = useState([]);
   const [comment, setComment] = useState("");
@@ -32,7 +36,10 @@ const ComplaintDetail = ({ route }) => {
   const [likeCount, setLikeCount] = useState(0);
   const complaintId = route.params?.complaintId;
   const { width } = useWindowDimensions();
+  const [visible, setVisible] = useState(null);
+  const openMenu = (id) => setVisible(id);
 
+  const closeMenu = () => setVisible(null);
   const loadComplaint = async () => {
     try {
       let res = await APIs.get(endpoints["complaint-detail"](complaintId));
@@ -89,6 +96,18 @@ const ComplaintDetail = ({ route }) => {
       console.error(ex);
     }
   };
+  const loadDeleteComment = async (commentId) => {
+    try {
+      accessToken = await AsyncStorage.getItem("access-token");
+      let response = await authAPI(accessToken).delete(
+        endpoints["delete_comment"](commentId)
+      );
+      loadComments();
+      Alert.alert("Xóa thành công!");
+    } catch (ex) {
+      console.error(ex);
+    }
+  };
 
   const handleLike = async () => {
     await loadLike();
@@ -114,7 +133,7 @@ const ComplaintDetail = ({ route }) => {
   };
 
   return (
-    <View>
+    <PaperProvider>
       <ScrollView onScroll={loadMoreInfo}>
         {complaint === null ? (
           <ActivityIndicator />
@@ -151,8 +170,14 @@ const ComplaintDetail = ({ route }) => {
                 {complaint.status_tag && (
                   <Chip
                     key={complaint.status_tag.id}
-                    style={[MyStyles.margin, MyStyles.statustag]}
-                    selectedColor="white"
+                    style={{
+                      ...MyStyles.margin,
+                      ...MyStyles.statustag,
+                      backgroundColor:
+                        complaint.status_tag.name === "Chưa xử lý"
+                          ? "#FF8F8F"
+                          : "#B0EBB4",
+                    }}
                   >
                     {complaint.status_tag.name}
                   </Chip>
@@ -210,16 +235,55 @@ const ComplaintDetail = ({ route }) => {
         <View style={Style.commentsContainer}>
           {comments.length > 0 ? (
             comments.map((c) => (
-              <List.Item
-                style={Style.commentStyle}
-                key={c.id}
-                title={c.user.username}
-                description={c.content}
-                left={() => (
+              <View key={c.id} style={[Style.commentStyle]}>
+                <View style={Style.commentContent}>
                   <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
-                )}
-                right={() => <Text>{moment(c.created_date).fromNow()}</Text>}
-              />
+                  <View style={Style.textContainer}>
+                    <View style={Style.userInfo}>
+                      <Text style={Style.username}>{c.user.username}</Text>
+                      <Text style={Style.createdDate}>
+                        {moment(c.created_date).fromNow()}
+                      </Text>
+                    </View>
+                    <Text style={Style.commentText}>{c.content}</Text>
+                  </View>
+
+                  <View>
+                    <Menu
+                      visible={visible === c.id}
+                      onDismiss={closeMenu}
+                      anchor={
+                        <IconButton
+                          onPress={() => openMenu(c.id)}
+                          icon="camera"
+                          size={20}
+                        />
+                      }
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "60%",
+                        elevation: 4,
+                      }}
+                    >
+                      <Menu.Item
+                        style={{ padding: 10 }}
+                        onPress={() =>
+                          navigation.navigate("EditComment", {
+                            commentId: c.id,
+                          })
+                        }
+                        title="Chỉnh sửa"
+                      />
+                      <Menu.Item
+                        style={{ padding: 10 }}
+                        onPress={() => loadDeleteComment(c.id)}
+                        title="Xóa"
+                      />
+                    </Menu>
+                  </View>
+                </View>
+              </View>
             ))
           ) : (
             <View style={Style.noCommentContainer}>
@@ -228,7 +292,7 @@ const ComplaintDetail = ({ route }) => {
           )}
         </View>
       </ScrollView>
-    </View>
+    </PaperProvider>
   );
 };
 

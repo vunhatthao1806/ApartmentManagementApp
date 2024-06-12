@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import MyStyles from "../../../styles/MyStyles";
+import Styles from "../profiles/Styles";
 import APIs, { authAPI, endpoints } from "../../../configs/APIs";
 
 const AddComplaint = ({ navigation }) => {
@@ -137,18 +138,24 @@ const AddComplaint = ({ navigation }) => {
   return (
     <ScrollView>
       <View>
-        <TouchableRipple onPress={chooseAvatar}>
-          <Text>Chọn hình đại diện...</Text>
-        </TouchableRipple>
-
-        {selectedImage && (
-          <View style={{ alignItems: "center", marginVertical: 20 }}>
-            <Image
-              source={{ uri: selectedImage.uri }}
-              style={{ width: 200, height: 200 }}
-            />
-          </View>
-        )}
+        <View style={Styles.uploadImage}>
+          <TouchableOpacity onPress={chooseAvatar}>
+            {selectedImage === null ? (
+              <View>
+                <View style={Styles.iconupimage}>
+                  <Icon source={"tray-arrow-up"} size={30} />
+                </View>
+              </View>
+            ) : (
+              <Image
+                source={{ uri: selectedImage.uri }}
+                width={100}
+                height={100}
+                borderRadius={10}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={[Style.margin, Style.container]}>

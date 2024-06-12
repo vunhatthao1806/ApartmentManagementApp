@@ -1,13 +1,15 @@
-import { Alert, TouchableOpacity, View } from "react-native";
-import MyStyles from "../../../styles/MyStyles";
+import { TouchableOpacity, View } from "react-native";
 import { Avatar, Button, List } from "react-native-paper";
-import Styles from "../Styles";
 import { useContext, useEffect, useState } from "react";
-import Context from "../../../configs/Context";
+import Context from "../../../../configs/Context";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authAPI, endpoints } from "../../../configs/APIs";
+import MyStyles from "../../../../styles/MyStyles";
+import Styles from "../../profiles/Styles";
+import { authAPI, endpoints } from "../../../../configs/APIs";
+
 const Profile = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState("");
   const [user, dispatch] = useContext(Context);
   const userAvatar = user ? user.avatar : null;
   const [avatar, setAvatar] = useState(null);
@@ -45,7 +47,7 @@ const Profile = ({ navigation }) => {
       try {
         let accessToken = await AsyncStorage.getItem("access-token");
         let res = await authAPI(accessToken).patch(
-          endpoints["current-user"],
+          endpoints["current_user"],
           form,
           {
             headers: {
@@ -59,18 +61,35 @@ const Profile = ({ navigation }) => {
       }
     }
   };
+
+  const loadCurrentUser = async () => {
+    try {
+      let accessToken = await AsyncStorage.getItem("access-token");
+      let res = await authAPI(accessToken).get(endpoints["current-user"]);
+      setUserInfo(res.data);
+    } catch (ex) {
+      console.error(ex);
+    }
+  };
+
+  useEffect(() => {
+    loadCurrentUser();
+  }, []);
+
   return (
     <View style={MyStyles.container}>
       <View style={Styles.avatarbackground}>
         <Avatar.Image
           style={Styles.avatarprofile}
-          source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          //source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          source={{ uri: userInfo.avatar }}
           size={150}
         />
-        <TouchableOpacity onPress={chooseAvatar}>
+        <TouchableOpacity>
           <Button
             icon="camera"
             mode="contained"
+            onPress={chooseAvatar}
             style={{
               width: 50,
               position: "absolute",
@@ -107,9 +126,9 @@ const Profile = ({ navigation }) => {
                 )}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Convenient")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Services")}>
               <List.Item
-                title="Tiện ích"
+                title="Dịch vụ"
                 titleStyle={{ fontSize: 20 }}
                 left={() => (
                   <List.Icon icon="star" color="rgba(60,32,22,0.8)" />

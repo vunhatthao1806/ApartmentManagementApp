@@ -1,8 +1,8 @@
 import { Image, Text, View } from "react-native";
-import MyStyles from "../../../styles/MyStyles";
+import MyStyles from "../../../../styles/MyStyles";
 import Styles from "../Styles";
 import { useContext } from "react";
-import Context from "../../../configs/Context";
+import Context from "../../../../configs/Context";
 import moment from "moment";
 
 const AccountInfo = () => {

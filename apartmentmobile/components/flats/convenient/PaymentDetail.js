@@ -3,9 +3,9 @@ import MyStyles from "../../../styles/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../configs/APIs";
 import { Image, Linking, Text, TouchableOpacity, View } from "react-native";
-import Style from "./Style";
 import moment from "moment";
 import { Button } from "react-native-paper";
+import Style from "./Style";
 
 const PaymentDetail = ({ route, navigation }) => {
   const [receipt, setReceipt] = useState();

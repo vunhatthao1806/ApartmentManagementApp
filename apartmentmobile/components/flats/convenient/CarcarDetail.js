@@ -8,7 +8,7 @@ import MyStyles from "../../../styles/MyStyles";
 import moment from "moment";
 
 const CarcardDetail = ({ route }) => {
-  const [carcard, setCarcard] = useState([]);
+  const [carcard, setCarcard] = useState({});
   const carcardid = route.params?.carcardid;
   const loadCarcard = async () => {
     try {
@@ -69,7 +69,9 @@ const CarcardDetail = ({ route }) => {
           </Text>
           <Text style={[Style.itemcarcard, { borderBottomWidth: 1 }]}>
             Ngày đăng ký thẻ:{" "}
-            {moment(carcard.created_date).format("DD/MM/YYYY")}
+            {carcard.created_date
+              ? moment(carcard.created_date).format("DD/MM/YYYY")
+              : "Không có thông tin"}
           </Text>
         </View>
       </View>

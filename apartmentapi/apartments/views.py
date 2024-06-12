@@ -10,23 +10,32 @@ from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from apartments.models import User, Receipt, CarCard, Item, Comment, Complaint, Flat, ECabinet, Like, Tag, PaymentDetail
+from apartments.models import User, Receipt, CarCard, Item, Comment, Complaint, Flat, ECabinet, Like, Tag, PhoneNumber
 from apartments import serializers, perms, paginators
 import djf_surveys.models
 import hashlib
 import hmac
 
 
-class UserViewSet(viewsets.ViewSet):
-    queryset = User.objects.filter(is_active=True)
+class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
-
+    pagination_class = paginators.AdminPaginator
     def get_permissions(self):
         if self.action in ['update_current_user', 'get_ecabinets']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
-
+    def get_queryset(self):
+        queryset = User.objects.all()
+        # Lấy tất cả các user ngoại trừ user đang request
+        if self.request.user.is_authenticated:
+            queryset = queryset.exclude(id=self.request.user.id)
+        # Tìm kiếm từ khóa
+        q = self.request.query_params.get('q')
+        if q:
+            queryset = queryset.filter(username__icontains=q)
+        return queryset
     @action(methods=['get', 'patch'], url_path='current-user', detail=False)
     def update_current_user(self, request):
         user = request.user
@@ -106,15 +115,26 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Flat.objects.all()
     serializer_class = serializers.FlatSerializer
 
+    # tìm kiếm flat active
+    def get_queryset(self):
+        queryset = self.queryset
 
-class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+        if self.action.__eq__('list'):
+            flat_id = self.request.query_params.get('flat_id')
+            if flat_id:
+                queryset = queryset.filter(active=True)
+
+        return queryset
+
+
+class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView):
     queryset = ECabinet.objects.filter(active=True)
-    serializer_class = serializers.ECabinetSerializer
+    serializer_class = serializers.EcabinetDetailSerializer
 
-    def get_permissions(self):
-        if self.action in ['add_items']:
-            return [permissions.IsAdminUser()]
-        return [perms.EcabinetOwner()]
+    # def get_permissions(self):
+    #     if self.action in ['add_items']:
+    #         return [permissions.IsAdminUser()]
+    #     return [perms.EcabinetOwner()]
 
     # tìm kiếm tủ đồ
     def get_queryset(self):
@@ -133,17 +153,23 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
 
         return Response(serializers.ItemSerializer(item, many=True).data, status=status.HTTP_200_OK)
 
-    @action(methods=['post'], url_path='add_item', detail=True)
-    def add_items(self, request, pk):
-        item = self.get_object().item_set.create(name=request.data.get('name'), status=False)
 
-        return Response(serializers.ItemSerializer(item).data, status=status.HTTP_201_CREATED)
+class AddItemViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = Item.objects.filter(active=True)  # tag lúc nào cũng cần dùng khi vào chi tiết complaint
+    serializer_class = serializers.AddItemSerializer
+    permission_classes = [perms.AdminOwner]
+
+
+class PhoneNumberViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = PhoneNumber.objects.all()
+    serializer_class = serializers.PhoneNumberSerializer
+    # permission_classes = [perms.AdminOwner]
 
 
 class ItemViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView):
     queryset = Item.objects.all()
     serializer_class = serializers.ItemSerializer
-    pagination_class = paginators.ItemPaginator
+    # pagination_class = paginators.ItemPaginator
     permission_classes = [perms.AdminOwner]
 
 
@@ -181,7 +207,7 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.List
         return queryset
 
     def get_permissions(self):
-        if self.action in ['add_comment', 'like', 'post']:
+        if self.action in ['add_comment', 'like']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -215,18 +241,28 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.List
         return Response(serializers.AuthenticatedComplaintDetailSerializer(self.get_object()).data)
 
 
-class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateAPIView, generics.ListAPIView):
+class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = serializers.CommentSerializer
     permission_classes = [perms.CommentOwner]
 
 
-class AdminViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.UpdateAPIView):
+class AdminViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
     permission_classes = [perms.AdminOwner]
 
+    @action(methods=['patch'], detail=True, url_path='update_active')
+    def update_user_status(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            is_active = request.data.get('is_active')
+            user.is_active = is_active
+            user.save()
+            return Response({'message': 'User status updated successfully'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = djf_surveys.models.Survey.objects.all()
@@ -250,9 +286,11 @@ class TagViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
+
 class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView):
     serializer_class = serializers.PaymentDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
@@ -265,6 +303,7 @@ class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView):
             return Response({'message': 'Payment detail created and receipt status updated successfully.'},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class PaymentViewSet(viewsets.ViewSet):
     def get_permissions(self):

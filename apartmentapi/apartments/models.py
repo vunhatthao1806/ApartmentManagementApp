@@ -16,12 +16,22 @@ class BaseModel(models.Model):
 
 class User(AbstractUser):
     avatar = CloudinaryField(null=True)
+    first_login = models.BooleanField(default=True)
+    expo_push_token = models.CharField(max_length=255, null= True, blank=True )
+
+class PhoneNumber(models.Model):
+    number = models.CharField(max_length=20)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.number
 
 
 class ECabinet(BaseModel):
     name = models.CharField(max_length=20)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
-
+    phone_number = models.ForeignKey('PhoneNumber', on_delete=models.PROTECT, null=True)
     def __str__(self):
         return self.name
 
@@ -47,6 +57,8 @@ class CarCard(BaseModel):
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null= True)
 
+    class Meta:
+        ordering = ['-created_date']
     def __str__(self):
         return self.number_plate
 
@@ -60,7 +72,6 @@ class Tag(BaseModel):
 
 class Item(BaseModel):
     image = CloudinaryField(null=True)
-    status = models.BooleanField()
     name = models.CharField(max_length=255)
     e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
     status_tag = models.ForeignKey('Tag', on_delete=models.PROTECT, null=True)
@@ -105,6 +116,8 @@ class Complaint(BaseModel):
     status_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='status_tag')
     complaint_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='complaint_tag')
 
+    class Meta:
+        ordering = ['-created_date']
     def __str__(self):
         return self.title
 

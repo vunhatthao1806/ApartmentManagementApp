@@ -15,3 +15,6 @@ class CommentPaginator(pagination.PageNumberPagination):
 
 class ComplaintPaginator(pagination.PageNumberPagination):
     page_size = 4
+
+class AdminPaginator(pagination.PageNumberPagination):
+    page_size = 4

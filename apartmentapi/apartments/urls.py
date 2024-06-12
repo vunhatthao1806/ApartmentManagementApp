@@ -18,5 +18,7 @@ r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('payments', views.PaymentViewSet, 'payments'),
 r.register('paymentdetails', views.PaymentDetailViewSet, 'paymentdetails'),
 r.register('addcomplaints', views.AddComplaintViewSet, 'addcomplaints')
+r.register('phonenumbers', views.PhoneNumberViewSet, 'phonenumbers')
+r.register('additem', views.AddItemViewSet, 'additem')
 urlpatterns = [path('admin/', admin_site.urls),
                path('', include(r.urls)), ]

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item, PaymentDetail
+from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item, PaymentDetail, PhoneNumber
 from django.utils.html import mark_safe
 from oauth2_provider.models import Application, AccessToken, Grant, IDToken, RefreshToken
 from djf_surveys.models import Answer, Question, Survey, UserAnswer
@@ -47,7 +47,7 @@ class ECabinetAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'e_cabinet', 'status_text']
+    list_display = ['id', 'name', 'e_cabinet']
     search_fields = ['name']
 
 
@@ -88,3 +88,4 @@ admin_site.register(Question)
 admin_site.register(Survey)
 admin_site.register(UserAnswer)
 admin_site.register(PaymentDetail)
+admin_site.register(PhoneNumber)

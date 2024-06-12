@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apartments.models import User, Receipt, Tag, CarCard, Complaint, Comment, Item, Flat, ECabinet, PaymentDetail
+from apartments.models import User, Receipt, Tag, CarCard, Complaint, Comment, Item, Flat, ECabinet, PaymentDetail, PhoneNumber
 import djf_surveys.models
 
 
@@ -27,6 +27,16 @@ class ECabinetSerializer(serializers.ModelSerializer):
 
     def get_count_items(self, obj):
         return obj.item_set.count()
+
+class EcabinetDetailSerializer(ECabinetSerializer):
+    class Meta:
+        model = ECabinetSerializer.Meta.model
+        fields = ECabinetSerializer.Meta.fields + ['phone_number']
+class PhoneNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhoneNumber
+        fields = ['id', 'number', 'user']
+
 
 
 class UserSerializer(ImageSerializer):
@@ -86,7 +96,7 @@ class CarCardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CarCard
-        fields = ['id', 'type', 'number_plate', 'image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2']
+        fields = ['id', 'type', 'number_plate', 'image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2', 'created_date']
 
 
 class ComplaintSerializer(serializers.ModelSerializer):
@@ -134,7 +144,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'status', 'e_cabinet', 'status_tag', 'image']
+        fields = ['id', 'name', 'e_cabinet', 'status_tag', 'image']
 
 
 class AuthenticatedComplaintDetailSerializer(ComplaintSerializer):
@@ -173,3 +183,14 @@ class AddComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
         fields = ['id', 'title', 'created_date', 'content', 'status_tag', 'complaint_tag', 'image']
+
+class AddItemSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
+    class Meta:
+        model = Item
+        fields = ['id', 'name', 'status_tag', 'e_cabinet', 'image']

@@ -10,7 +10,7 @@ from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from apartments.models import User, Receipt, CarCard, Item, Comment, Complaint, Flat, ECabinet, Like, Tag, PhoneNumber
+from apartments.models import User, Receipt, CarCard, Item, Comment, Complaint, Flat, ECabinet, Like, Tag, PhoneNumber, Choice, Question, Survey, AnswerUser
 from apartments import serializers, perms, paginators
 import djf_surveys.models
 import hashlib
@@ -389,3 +389,66 @@ class PaymentViewSet(viewsets.ViewSet):
             return Response({'message': 'Payment successful, Receipt updated successfully'})
         except Exception as e:
             return Response({'error': f'Error updating receipt status: {str(e)}'}, status=500)
+
+class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Survey.objects.all()
+    serializer_class = serializers.SurveySerializer
+
+    @action(methods=['get'], url_path='questions', detail=True)
+    def get_questions(self, request, pk):
+        q = self.get_object().question_set.all()
+
+        return Response(serializers.QuestionSerializer(q, many=True).data, status=status.HTTP_200_OK)
+
+    @action(methods=['post'], url_path='create_questions', detail=True)
+    def create_questions(self, request, pk):
+        survey = self.get_object()
+        q = Question.objects.create(name=request.data.get('name'), survey=survey)
+
+        return Response(serializers.CreateQuestionsSerializer(q).data,
+                        status=status.HTTP_201_CREATED)
+
+
+class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Question.objects.all()
+    serializer_class = serializers.QuestionSerializer
+
+    @action(methods=['get'], url_path='choices', detail=True)
+    def get_choices(self, request, pk):
+        c = self.get_object().choice_set.all()
+
+        return Response(serializers.ChoiceSerializer(c, many=True).data, status=status.HTTP_200_OK)
+
+    @action(methods=['post'], url_path='create_choices', detail=True)
+    def create_choices(self, request, pk):
+        question = self.get_object()
+        c = Choice.objects.create(name=request.data.get('name'), question=question)
+
+        return Response(serializers.ChoiceSerializer(c).data,
+                        status=status.HTTP_201_CREATED)
+
+
+class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView):
+    queryset = Choice.objects.all()
+    serializer_class = serializers.ChoiceSerializer
+
+
+class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = AnswerUser.objects.all()
+    serializer_class = serializers.AnswerSerializer
+
+
+class CreateSurveyViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = serializers.CreateSurveySerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user_create=user)
+
+
+
+
+class CreateQuestionViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = serializers.CreateQuestionsSerializer

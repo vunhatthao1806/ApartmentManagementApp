@@ -1,10 +1,10 @@
 from django.contrib import admin
-from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item, PaymentDetail, PhoneNumber
+from apartments.models import User, Flat, CarCard, Receipt, ECabinet, Tag, Comment, Complaint, Item, PaymentDetail, PhoneNumber, Survey, AnswerUser, Question, Choice
 from django.utils.html import mark_safe
 from oauth2_provider.models import Application, AccessToken, Grant, IDToken, RefreshToken
-from djf_surveys.models import Answer, Question, Survey, UserAnswer
 import cloudinary
-
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 class ApartmentAppAdminSite(admin.AdminSite):
     site_header = "HỆ THỐNG QUẢN LÝ CHUNG CƯ"
@@ -13,23 +13,44 @@ class ApartmentAppAdminSite(admin.AdminSite):
 admin_site = ApartmentAppAdminSite('myapartment')
 
 
-class UserAdmin(admin.ModelAdmin):
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+class UserAdmin(BaseUserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
     list_display = ['username', 'first_name', 'last_name']
     search_fields = ['username']
     list_filter = ['username', 'first_name', 'last_name']
     readonly_fields = ['my_avatar']
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'avatar')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'avatar'),
+        }),
+    )
 
     def my_avatar(self, user):
         if user.avatar:
-            if type(user.avatar) is cloudinary.CloudinaryResource:
+            if isinstance(user.avatar, cloudinary.CloudinaryResource):
                 return mark_safe(f"<img width='300' src='{user.avatar.url}' />")
 
     class Media:
         css = {
             'all': ['/static/css/style.css']
         }
-
-
 class FlatAdmin(admin.ModelAdmin):
     list_display = ['id', 'floor', 'block', 'apartment_num']
     search_fields = ['floor', 'block', 'apartment_num']
@@ -83,9 +104,9 @@ admin_site.register(AccessToken)
 admin_site.register(IDToken)
 admin_site.register(RefreshToken)
 admin_site.register(Application)
-admin_site.register(Answer)
-admin_site.register(Question)
-admin_site.register(Survey)
-admin_site.register(UserAnswer)
 admin_site.register(PaymentDetail)
 admin_site.register(PhoneNumber)
+admin_site.register(Choice)
+admin_site.register(AnswerUser)
+admin_site.register(Question)
+admin_site.register(Survey)

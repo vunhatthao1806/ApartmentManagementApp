@@ -18,7 +18,7 @@ class User(AbstractUser):
     avatar = CloudinaryField(null=True)
     first_login = models.BooleanField(default=True)
     expo_push_token = models.CharField(max_length=255, null= True, blank=True )
-
+    survey_user_done = models.ManyToManyField('Survey', related_name='survey_user_done')
 class PhoneNumber(models.Model):
     number = models.CharField(max_length=20)
 
@@ -89,7 +89,7 @@ class Receipt(BaseModel):
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
-    order_id = models.CharField(max_length=255, null=True)
+    order_id = models.CharField(max_length=255, null=True, blank= True)
 
     def __str__(self):
         return self.title
@@ -99,13 +99,6 @@ class PaymentDetail(BaseModel):
     receipt = models.OneToOneField(Receipt, on_delete=models.CASCADE)
     def __str__(self):
         return self.receipt.title
-class Survey(BaseModel):
-    title = models.CharField(max_length=255)
-    content = RichTextField(null=True)
-    user = models.ManyToManyField(User)
-
-    def __str__(self):
-        return self.title
 
 
 class Complaint(BaseModel):
@@ -138,3 +131,35 @@ class Like(Interaction):
     class Meta:
         unique_together = ('complaint', 'user')
 
+class Survey(BaseModel):
+    title = models.CharField(max_length=255)
+    content = RichTextField(null= True)
+
+    user_create = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_create')
+
+    def __str__(self):
+        return self.title
+
+
+class Question(BaseModel):
+    name = models.CharField(max_length=255)
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True, related_name='questions')
+
+    def __str__(self):
+        return self.name
+
+
+class Choice(models.Model):
+    name = models.CharField(max_length=255)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class AnswerUser(models.Model):
+
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)

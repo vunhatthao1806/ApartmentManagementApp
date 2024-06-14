@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apartments.models import User, Receipt, Tag, CarCard, Complaint, Comment, Item, Flat, ECabinet, PaymentDetail, PhoneNumber
+from apartments.models import User, Receipt, Tag, CarCard, Complaint, Comment, Item, Flat, ECabinet, PaymentDetail, PhoneNumber,Survey, Question, Choice, AnswerUser
 import djf_surveys.models
 
 
@@ -194,3 +194,51 @@ class AddItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['id', 'name', 'status_tag', 'e_cabinet', 'image']
+
+class SurveySerializer(serializers.ModelSerializer):
+    count_users = serializers.SerializerMethodField()
+    user_create = UserSerializer()
+
+    class Meta:
+        model = Survey
+        fields = ['id', 'title', 'created_date', 'active', 'content', 'user_create', 'count_users']
+
+    def get_count_users(self, obj):
+        return obj.survey_user_done.count()
+
+
+class CreateSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Survey
+        fields = ['id', 'title', 'content']
+
+
+class CreateQuestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'name', 'survey']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Question
+        fields = ['id', 'name', 'survey']
+
+
+class ChoiceSerializer(serializers.ModelSerializer):
+    # question = QuestionSerializer()
+
+    class Meta:
+        model = Choice
+        fields = ['id', 'name', 'question']
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    # question = QuestionSerializer()
+    # user = UserSerializer()
+    # survey = SurveySerializer()
+
+    class Meta:
+        model = AnswerUser
+        fields = ['id', 'question', 'survey', 'user']

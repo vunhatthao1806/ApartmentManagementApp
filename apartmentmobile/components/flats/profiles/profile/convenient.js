@@ -2,12 +2,28 @@ import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import MyStyles from "../../../../styles/MyStyles";
 import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import Context from "../../../../configs/Context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAPI, endpoints } from "../../../../configs/APIs";
 
 const Convenient = ({ navigation }) => {
-  const [user, dispatch] = useContext(Context);
-  const userAvatar = user ? user.avatar : null;
+  //const [user, dispatch] = useContext(Context);
+  //const userAvatar = user ? user.avatar : null;
+  const [user, setUser] = useState("");
+  const loadCurrentUser = async () => {
+    try {
+      let accessToken = await AsyncStorage.getItem("access-token");
+      let res = await authAPI(accessToken).get(endpoints["current-user"]);
+      setUser(res.data);
+      //console.log(res.data.first_login);
+    } catch (ex) {
+      console.error(ex);
+    }
+  };
+  useEffect(() => {
+    loadCurrentUser();
+  }, []);
   return (
     <View style={MyStyles.container}>
       <View>
@@ -15,9 +31,7 @@ const Convenient = ({ navigation }) => {
           <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
-              source={
-                userAvatar ? { uri: userAvatar } : require("./avatar.jpg")
-              }
+              source={user ? { uri: user.avatar } : require("./avatar.jpg")}
               size={130}
             />
           </View>

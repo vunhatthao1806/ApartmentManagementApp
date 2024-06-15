@@ -60,12 +60,17 @@ const LockAccount = ({ navigation }) => {
   }, [q, page]);
 
   return (
-    <View style={{ marginBottom: 60, marginTop: 10 }}>
+    <View
+      style={{ marginBottom: 60, marginTop: 10, backgroundColor: "#F8F4E1" }}
+    >
       <Searchbar
         placeholder="Nhập từ khóa"
-        style={{ backgroundColor: "#D1D8C5" }}
+        style={{ backgroundColor: "#74512D" }}
         onChangeText={(q) => search(q, setQ)}
         value={q}
+        placeholderTextColor={"white"}
+        inputStyle={{ color: "white" }}
+        iconColor="white"
       />
       <ScrollView style={{ marginTop: 10 }} onScroll={loadMore}>
         {loading ? (
@@ -74,7 +79,10 @@ const LockAccount = ({ navigation }) => {
           <>
             {user && user.length > 0 ? (
               user.map((u) => (
-                <View style={[Style.ecabinetStyle]} key={u.id}>
+                <View
+                  style={[Style.ecabinetStyle, { backgroundColor: "#AF8F6F" }]}
+                  key={u.id}
+                >
                   <TouchableOpacity
                     onPress={() =>
                       navigation.navigate("LockAccountDetail", { userid: u.id })

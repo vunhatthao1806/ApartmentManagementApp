@@ -9,12 +9,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../../configs/APIs";
 const Profile = ({ navigation }) => {
   const [user, dispatch] = useContext(Context);
-  const userAvatar = user ? user.avatar : null;
+  //const userAvatar = user ? user.avatar : null;
+  const [userInfo, setUserInfo] = useState("");
   const [avatar, setAvatar] = useState(null);
   const logout = () => {
     dispatch({
       type: "logout",
     });
+  };
+  const loadCurrentUser = async () => {
+    try {
+      let accessToken = await AsyncStorage.getItem("access-token");
+      let res = await authAPI(accessToken).get(endpoints["current-user"]);
+      setUserInfo(res.data);
+      console.info(userInfo);
+    } catch (ex) {
+      console.error(ex);
+    }
   };
   const chooseAvatar = async () => {
     let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -54,17 +65,22 @@ const Profile = ({ navigation }) => {
           }
         );
         Alert.alert("Thông báo", "Cập nhật ảnh thành công!!!");
+        loadCurrentUser();
       } catch (ex) {
         console.error(ex);
       }
     }
   };
+  useEffect(() => {
+    loadCurrentUser();
+  }, []);
   return (
     <View style={MyStyles.container}>
       <View style={Styles.avatarbackground}>
         <Avatar.Image
           style={Styles.avatarprofile}
-          source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          //source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          source={{ uri: userInfo.avatar }}
           size={150}
         />
         <TouchableOpacity onPress={chooseAvatar}>

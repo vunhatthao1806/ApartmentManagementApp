@@ -31,6 +31,10 @@ export const endpoints = {
   "create-payment": "/payments/create-payment/",
   add_complaint: "/addcomplaints/",
   tranferpayment: "/paymentdetails/",
+  surveys: "/surveys/",
+  create_surveys: "/createsurveys/",
+  create_questions: (surveyId) => `/surveys/${surveyId}/create_questions/`,
+  choices: "/choices/",
 };
 export const authAPI = (accessToken) =>
   axios.create({

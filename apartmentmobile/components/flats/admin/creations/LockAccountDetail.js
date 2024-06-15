@@ -47,9 +47,14 @@ const LockAccountDetail = ({ route }) => {
     loadUser();
   }, [userid]);
   return (
-    <View style={MyStyles.container}>
+    <View style={[MyStyles.container, { backgroundColor: "#F8F4E1" }]}>
       {user && (
-        <View style={[Style.ecabinetStyle, { marginTop: 50 }]}>
+        <View
+          style={[
+            Style.ecabinetStyle,
+            { marginTop: 50, backgroundColor: "#AF8F6F" },
+          ]}
+        >
           <View style={{ flexDirection: "row", margin: 10 }}>
             <Image
               source={

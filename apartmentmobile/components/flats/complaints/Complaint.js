@@ -14,6 +14,7 @@ import {
   Avatar,
   Card,
   Chip,
+  Icon,
   List,
   Searchbar,
 } from "react-native-paper";
@@ -110,15 +111,31 @@ const Complaint = ({
   const ComplaintTags = tags.filter((t) => t.id >= 1 && t.id <= 3);
 
   return (
-    <View style={[MyStyles.containercomplaint]}>
+    <View style={[MyStyles.container, { marginTop: 20 }]}>
       <Text style={[Style.cates, Style.margin]}>Bản tin góp ý</Text>
 
       <View style={[MyStyles.row, MyStyles.wrap]}>
         <Chip
           mode={!complaint_tagId ? "flat" : "outlined"}
-          onPress={() => search("", setComplaint_tagId)}
-          style={Style.tags}
-          icon="shape-plus"
+          onPress={() => search("", setComplaint_tagId)} // -----Mới thêm-----
+          style={[
+            Style.tags,
+            !complaint_tagId
+              ? { backgroundColor: "#AF8F6F" }
+              : { backgroundColor: "#543310" },
+          ]}
+          textStyle={{ color: "#F8F4E1" }}
+          icon={() => (
+            <Icon
+              source="tag"
+              size={20}
+              color={
+                !complaint_tagId
+                  ? Style.chipTextSelected.color
+                  : Style.chipTextUnselected.color
+              }
+            />
+          )}
         >
           Tất cả
         </Chip>
@@ -132,8 +149,24 @@ const Complaint = ({
                 mode={c.id === complaint_tagId ? "flat" : "outlined"}
                 key={c.id}
                 onPress={() => search(c.id, setComplaint_tagId)}
-                style={Style.tags}
-                icon="shape-plus"
+                textStyle={{ color: "#F8F4E1" }} // -----Mới thêm-----
+                style={[
+                  Style.tags,
+                  c.id === complaint_tagId
+                    ? { backgroundColor: "#AF8F6F" }
+                    : { backgroundColor: "#543310" },
+                ]}
+                icon={() => (
+                  <Icon
+                    source="tag"
+                    size={20}
+                    color={
+                      !complaint_tagId
+                        ? Style.chipTextSelected.color
+                        : Style.chipTextUnselected.color
+                    }
+                  />
+                )}
               >
                 {c.name}
               </Chip>
@@ -141,97 +174,128 @@ const Complaint = ({
           </>
         )}
       </View>
-
-      <ScrollView onScroll={Scroll}>
-        {complaints === null ? (
-          <ActivityIndicator />
-        ) : (
-          <>
-            {complaints.map((c) => (
-              <TouchableOpacity
-                key={c.id}
-                onPress={() =>
-                  navigation.navigate("ComplaintDetail", { complaintId: c.id })
-                }
-              >
-                <Card key={c.id} style={Style.marginbot}>
-                  <View style={[MyStyles.row, MyStyles.wrap, MyStyles.margin]}>
-                    <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
-                    <View>
-                      <Text style={Style.username}>{c.user.username}</Text>
-                      <Text style={Style.createdDate}>
-                        {moment(c.created_date).format("DD/MM/YYYY HH:mm")}
-                      </Text>
+      {/* <SafeAreaView style={Style.container}> */}
+      <ScrollView>
+        {/* // -----Mới đổi View-> scrollview----- */}
+        <ScrollView onScroll={Scroll}>
+          {complaints === null ? (
+            <ActivityIndicator />
+          ) : (
+            <>
+              {complaints.map((c) => (
+                <TouchableOpacity
+                  key={c.id}
+                  onPress={() =>
+                    navigation.navigate("ComplaintDetail", {
+                      complaintId: c.id,
+                    })
+                  }
+                >
+                  {/* // -----Mới thêm----- */}
+                  <Card key={c.id} style={{ backgroundColor: "white" }}>
+                    <View
+                      style={[MyStyles.row, MyStyles.wrap, MyStyles.margin]}
+                    >
+                      <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
+                      <View>
+                        <Text style={Style.username}>{c.user.username}</Text>
+                        <Text style={Style.createdDate}>
+                          {moment(c.created_date).format("DD/MM/YYYY HH:mm")}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
 
-                  <Text style={Style.title}>{c.title}</Text>
+                    <Text style={Style.title}>{c.title}</Text>
 
-                  <Card.Cover source={{ uri: c.image }} />
-                  <View style={[MyStyles.row, MyStyles.wrap, MyStyles.margin]}>
-                    {c.complaint_tag && (
-                      <Chip
-                        key={c.complaint_tag.id}
-                        style={MyStyles.margin}
-                        icon="vacuum"
-                      >
-                        {c.complaint_tag.name}
-                      </Chip>
-                    )}
-                    {c.status_tag && (
-                      <Chip
-                        key={c.status_tag.id}
-                        style={[MyStyles.margin, MyStyles.statustag]}
-                        selectedColor="white"
-                      >
-                        {c.status_tag.name}
-                      </Chip>
-                    )}
-                  </View>
-                  <Card.Content style={Style.cardContent}>
-                    <RenderHTML
-                      contentWidth={width}
-                      //source={{html: c.content}}
-                      source={{
-                        html: showFullContent[c.id]
-                          ? c.content
-                          : `${c.content.slice(0, maxContentLength)}...`,
-                      }}
-                      // defaultTextProps={{ style: Style.text }}
-                    />
+                    <Card.Cover source={{ uri: c.image }} />
+                    <View
+                      style={[MyStyles.row, MyStyles.wrap, MyStyles.margin]}
+                    >
+                      {c.complaint_tag && (
+                        <Chip
+                          key={c.complaint_tag.id}
+                          style={[
+                            MyStyles.margin,
+                            { backgroundColor: "#543310" },
+                          ]}
+                          icon={() => (
+                            // -----Mới thêm-----
+                            <Icon
+                              source="tag"
+                              size={20}
+                              color={
+                                !complaint_tagId
+                                  ? Style.chipTextSelected.color
+                                  : Style.chipTextUnselected.color
+                              }
+                            />
+                          )}
+                          textStyle={{ color: "#F8F4E1" }}
+                        >
+                          {c.complaint_tag.name}
+                        </Chip>
+                      )}
+                      {c.status_tag && (
+                        <Chip
+                          key={c.status_tag.id}
+                          style={{
+                            ...MyStyles.margin,
+                            ...MyStyles.statustag,
+                            backgroundColor:
+                              c.status_tag.name === "Chưa xử lý"
+                                ? "#FF8F8F"
+                                : "#B0EBB4",
+                          }}
+                        >
+                          {c.status_tag.name}
+                        </Chip>
+                      )}
+                    </View>
+                    <Card.Content style={Style.cardContent}>
+                      <RenderHTML
+                        contentWidth={width}
+                        source={{
+                          html: showFullContent[c.id]
+                            ? c.content
+                            : `${c.content.slice(0, maxContentLength)}...`,
+                        }}
+                      />
 
-                    {!showFullContent[c.id] &&
-                      c.content.length > maxContentLength && (
+                      {!showFullContent[c.id] &&
+                        c.content.length > maxContentLength && (
+                          <TouchableOpacity
+                            onPress={() => handleToggleContent(c.id)}
+                          >
+                            <Text style={Style.readMore}>Đọc thêm</Text>
+                          </TouchableOpacity>
+                        )}
+                      {showFullContent[c.id] && (
                         <TouchableOpacity
                           onPress={() => handleToggleContent(c.id)}
                         >
-                          <Text style={Style.readMore}>Đọc thêm</Text>
+                          <Text style={Style.readMore}>Thu gọn</Text>
                         </TouchableOpacity>
                       )}
-                    {showFullContent[c.id] && (
-                      <TouchableOpacity
-                        onPress={() => handleToggleContent(c.id)}
-                      >
-                        <Text style={Style.readMore}>Thu gọn</Text>
-                      </TouchableOpacity>
-                    )}
-                  </Card.Content>
-                </Card>
-              </TouchableOpacity>
-            ))}
-          </>
-        )}
+                    </Card.Content>
+                  </Card>
+                </TouchableOpacity>
+              ))}
+            </>
+          )}
+        </ScrollView>
       </ScrollView>
-      <AnimatedFAB
-        icon={"plus"}
-        label={"Add complaint"}
+      <AnimatedFAB // -----Mới thêm-----
+        icon={() => <Icon source="plus" size={20} color="#543310" />}
+        label={"ĐĂNG BÀI VIẾT"}
         extended={isExtended}
         onPress={() => navigation.navigate("AddComplaint")}
         visible={visible}
         animateFrom={"right"}
         iconMode={"static"}
         style={[Style.fabStyle, style, fabStyle]}
+        labelStyle={{ color: "#FFFFFF" }}
       />
+      {/* </SafeAreaView> */}
     </View>
   );
 };

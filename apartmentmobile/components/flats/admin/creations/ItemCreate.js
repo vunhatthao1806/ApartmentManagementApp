@@ -202,7 +202,7 @@ const ItemCreate = () => {
 
       <View style={[Style.margin, Style.container]}>
         <View style={MyStyles.row}>
-          <Icon source="pen" color={"#4F6F52"} size={28} />
+          <Icon source="pen" color={"#543310"} size={28} />
           <Text style={Style.titleComplaint}>Tên hàng nhận:</Text>
         </View>
         <TextInput
@@ -213,8 +213,8 @@ const ItemCreate = () => {
           placeholderTextColor="white"
           textColor="white"
           cursorColor="white"
-          underlineStyle={{ backgroundColor: "#627254" }}
-          backgroundColor="#627254"
+          underlineStyle={{ backgroundColor: "#543310" }}
+          backgroundColor="#543310"
         />
       </View>
 
@@ -237,11 +237,18 @@ const ItemCreate = () => {
                     setCheckedStatus(checkedStatus === c.id ? null : c.id);
                   }}
                   style={[
-                    Style.tags,
-                    checkedStatus === c.id
-                      ? Style.chipUnselected
-                      : Style.chipSelected,
+                    MyStyles.margin,
+                    {
+                      backgroundColor:
+                        checkedStatus === c.id ? "#AF8F6F" : "#543310", // Thay đổi màu nền dựa trên trạng thái được chọn
+                    },
                   ]}
+                  icon={() => (
+                    // -----Mới thêm-----
+                    <Icon source="tag" size={20} color={"#F8F4E1"} />
+                  )}
+                  textStyle={{ color: "#F8F4E1" }}
+                  // style={[Style.tags, checkedStatus === c.id ? Style.chipUnselected : Style.chipSelected]}
                 >
                   {c.name}
                 </Chip>
@@ -253,7 +260,7 @@ const ItemCreate = () => {
 
       <View style={[Style.margin, Style.container]}>
         <View style={MyStyles.row}>
-          <Icon source="file-cabinet" color={"#4F6F52"} size={28} />
+          <Icon source="file-cabinet" color={"#543310"} size={28} />
           <Text style={Style.titleComplaint}> Ecabinets</Text>
         </View>
 
@@ -269,7 +276,7 @@ const ItemCreate = () => {
               width: "100%",
               borderWidth: 1,
               borderColor: "#ccc",
-              backgroundColor: "#627254",
+              backgroundColor: "#543310",
             }}
             onValueChange={(itemValue) => {
               setSelectedEcabinet(itemValue);
@@ -289,14 +296,6 @@ const ItemCreate = () => {
             ))}
           </Picker>
         )}
-        {/* {selectedEcabinet && <Text>Bạn đã chọn: {selectedEcabinet}</Text>} */}
-        {/* 
-                {selectedEcabinet && (
-                    <>
-                        <Text>Bạn đã chọn: {ecabinets.find(e => e.id === selectedEcabinet)?.name}</Text>
-                        <Text>Số điện thoại của chủ sở hữu: {ownerPhoneNumber}</Text>
-                    </>
-                )}   */}
 
         <View>
           <TextInput
@@ -309,15 +308,14 @@ const ItemCreate = () => {
             disabled={true}
           />
           <TextInput
-            style={{ marginTop: 20, backgroundColor: "#627254" }}
-            label="Tin nhắn"
+            style={{ marginTop: 20, backgroundColor: "#543310" }}
             placeholder="Nhập tin nhắn"
             multiline={true}
             value={message}
             onChangeText={setMessage}
             textColor="white"
             cursorColor="white"
-            labelStyle={{ color: "#fff" }}
+            labelStyle={{ color: "white" }}
           />
         </View>
       </View>
@@ -326,7 +324,7 @@ const ItemCreate = () => {
         style={[Style.margin, Style.container]}
         onPress={createItem}
       >
-        <View style={Style.itemCreate}>
+        <View style={[Style.itemCreate, { backgroundColor: "#543310" }]}>
           <Text style={Style.textCreate}>Create</Text>
         </View>
       </TouchableOpacity>

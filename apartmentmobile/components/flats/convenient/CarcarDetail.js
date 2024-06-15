@@ -25,7 +25,7 @@ const CarcardDetail = ({ route }) => {
     loadCarcard();
   }, [carcardid]);
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "#F8F4E1" }}>
       <View style={MyStyles.container}>
         <Text style={Style.titlecarcard}>THÔNG TIN THẺ XE</Text>
         <View>

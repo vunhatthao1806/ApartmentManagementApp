@@ -107,7 +107,7 @@ const CarcardRegister = () => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: "#F8F4E1" }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >

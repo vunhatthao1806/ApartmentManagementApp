@@ -40,6 +40,9 @@ import ItemUpdate from "./components/flats/admin/creations/ItemUpdate";
 import { Icon } from "react-native-paper";
 import LockAccount from "./components/flats/admin/creations/LockAccount";
 import LockAccountDetail from "./components/flats/admin/creations/LockAccountDetail";
+import Surveys from "./components/flats/admin/creations/Surveys";
+import SurveyQuestion from "./components/flats/admin/creations/SurveyQuestion";
+import QuestionCreate from "./components/flats/admin/creations/QuestionCreate";
 const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (
@@ -220,11 +223,6 @@ const AdminStack = () => {
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="SurveyCreate"
-        component={SurveyCreate}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
         name="LockAccount"
         component={LockAccount}
         options={{ headerShown: true }}
@@ -242,7 +240,32 @@ const AdminStack = () => {
     </Stack.Navigator>
   );
 };
-
+const SurveyStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Surveys"
+        component={Surveys}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SurveyCreate"
+        component={SurveyCreate}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="SurveyQuestion"
+        component={SurveyQuestion}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="QuestionCreate"
+        component={QuestionCreate}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+};
 //const Tab = createBottomTabNavigator();
 const Tab = createMaterialBottomTabNavigator();
 const MyTab = () => {
@@ -308,11 +331,13 @@ const AdminTab = () => {
       />
 
       <Tab.Screen
-        name="Survey"
-        component={Survey}
+        name="SurveyStack"
+        component={SurveyStack}
         options={{
           title: "Khảo sát",
-          tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
+          tabBarIcon: () => (
+            <Icon source="playlist-edit" size={30} color="white" />
+          ),
           headerTitleAlign: "center",
         }}
       />

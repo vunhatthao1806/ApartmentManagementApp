@@ -48,26 +48,6 @@ const Services = ({ navigation }) => {
         </View>
         <View style={{ marginTop: 20 }}>
           <View style={Styles.row}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SurveyCreate")}
-            >
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="playlist-edit"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  Khảo sát
-                </Text>
-              </View>
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("ItemCreate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
@@ -82,7 +62,7 @@ const Services = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  {"Thêm hàng \n hóa mới"}
+                  Thêm hàng hóa mới
                 </Text>
               </View>
             </TouchableOpacity>

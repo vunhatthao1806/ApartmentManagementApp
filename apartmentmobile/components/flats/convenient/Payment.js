@@ -93,9 +93,9 @@ const Payment = ({ navigation }) => {
     callback(value);
   };
   return (
-    <View style={MyStyles.container}>
+    <View style={[MyStyles.container, { backgroundColor: "#F8F4E1" }]}>
       {loading && <ActivityIndicator />}
-      <View style={Style.tiltepayment}>
+      <View style={[Style.tiltepayment, { backgroundColor: "#AF8F6F" }]}>
         <TouchableOpacity onPress={() => setStatusAndResetPage("False")}>
           <Text style={Style.titletextpayment}>Hóa Đơn</Text>
         </TouchableOpacity>
@@ -112,10 +112,12 @@ const Payment = ({ navigation }) => {
             style={Style.search}
             onChangeText={(q) => search(q, setQ)}
             value={q}
+            iconColor="white"
+            inputStyle={{ color: "white" }}
           />
         </View>
       </TouchableWithoutFeedback>
-      <ScrollView onScroll={loadMore}>
+      <ScrollView onScroll={loadMore} style={{ backgroundColor: "#F8F4E1" }}>
         {receipts.map((r) => (
           <TouchableOpacity key={r.id} onPress={() => handlePress(r)}>
             <View style={[Style.ecabinetStyle, getBackgroundColor(r.tag.name)]}>

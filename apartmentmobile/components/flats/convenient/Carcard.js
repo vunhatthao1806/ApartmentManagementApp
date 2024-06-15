@@ -46,10 +46,13 @@ const Carcard = ({ navigation }) => {
   };
 
   return (
-    <ScrollView onScroll={loadMore}>
+    <ScrollView
+      onScroll={loadMore}
+      style={{ backgroundColor: "#F8F4E1", marginTop: 10 }}
+    >
       {loading && <ActivityIndicator />}
       {carcard.map((c) => (
-        <View style={Style.ecabinetStyle}>
+        <View style={[Style.ecabinetStyle, { backgroundColor: "#AF8F6F" }]}>
           <TouchableOpacity
             key={c.id}
             onPress={() =>

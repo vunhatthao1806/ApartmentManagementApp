@@ -55,7 +55,7 @@ const TranferPayment = ({ route }) => {
     }
   };
   return (
-    <View style={MyStyles.container}>
+    <View style={[MyStyles.container, { backgroundColor: "#F8F4E1" }]}>
       <View style={Style.backgroundtranfer}>
         <View style={Style.uploadImage}>
           <TouchableOpacity onPress={chooseImage}>

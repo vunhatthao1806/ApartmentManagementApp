@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Text } from "react-native";
-import { TextInput, Button, Avatar } from "react-native-paper";
+import { TextInput, Button, Avatar, Icon } from "react-native-paper";
 import { View } from "react-native";
 import Style from "./Style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,8 +25,10 @@ const EditComment = ({ route }) => {
       setComment(response.data);
       console.log(response.data);
       Alert.alert("Cập nhật thành công!");
+      //navigation.navigate("ComplaintDetail");
     } catch (ex) {
-      console.error(ex);
+      //console.error(ex);
+      Alert.alert("Cảnh báo", "Không thể sửa bình luận này!!!");
     }
   };
 
@@ -47,12 +49,16 @@ const EditComment = ({ route }) => {
               label={"Suy nghĩ của bạn là gì"}
               value={comment}
               onChangeText={setComment}
+              backgroundColor="#F8F4E1"
             />
             {/* <Text style={Style.commentText}>{comment.content}</Text> */}
             <View style={Style.buttonContainer}>
               <Button
                 style={Style.button}
-                icon="send-circle"
+                icon={() => (
+                  // -----Mới thêm-----
+                  <Icon source={"send"} size={25} color={"#543310"} />
+                )}
                 mode="contained"
                 onPress={handleUpdateComment}
               />

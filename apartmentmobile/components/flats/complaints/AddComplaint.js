@@ -138,29 +138,37 @@ const AddComplaint = ({ navigation }) => {
   return (
     <ScrollView>
       <View>
-        <View style={Styles.uploadImage}>
-          <TouchableOpacity onPress={chooseAvatar}>
-            {selectedImage === null ? (
-              <View>
-                <View style={Styles.iconupimage}>
-                  <Icon source={"tray-arrow-up"} size={30} />
+        <View style={Styles.backgroundtranfer}>
+          <View style={Styles.uploadImage}>
+            <TouchableOpacity onPress={chooseAvatar}>
+              {selectedImage === null ? (
+                <View>
+                  <View style={Styles.iconupimage}>
+                    <Icon source={"tray-arrow-up"} size={30} />
+                  </View>
                 </View>
-              </View>
-            ) : (
-              <Image
-                source={{ uri: selectedImage.uri }}
-                width={100}
-                height={100}
-                borderRadius={10}
-              />
-            )}
-          </TouchableOpacity>
+              ) : (
+                <Image
+                  source={{ uri: selectedImage.uri }}
+                  width={100}
+                  height={100}
+                  borderRadius={10}
+                />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {/* {selectedImage && (
+            <View style={{ alignItems: 'center', marginVertical: 20 }}>
+                <Image source={{ uri: selectedImage.uri }} style={{ width: 200, height: 200 }} />
+            </View>
+        )} */}
       </View>
 
       <View style={[Style.margin, Style.container]}>
         <View style={MyStyles.row}>
-          <Icon source="pen" color={"#937DC2"} size={28} />
+          <Icon source="pen" color={"#AF8F6F"} size={28} />
           <Text style={Style.titleComplaint}>Tiêu đề bài viết</Text>
         </View>
         <TextInput
@@ -168,12 +176,18 @@ const AddComplaint = ({ navigation }) => {
           value={title}
           onChangeText={(title) => setTitle(title)}
           multiline={true}
+          backgroundColor="#543310"
+          placeholder="Nhập tiêu đề"
+          placeholderTextColor="white"
+          textColor="white"
+          cursorColor="white"
+          underlineStyle={{ backgroundColor: "#543310" }}
         />
       </View>
 
       <View style={[Style.margin, Style.container]}>
         <View style={MyStyles.row}>
-          <Icon source="book-open-variant" color={"#937DC2"} size={28} />
+          <Icon source="book-open-variant" color={"#AF8F6F"} size={28} />
           <Text style={[Style.titleComplaint]}>Nội dung</Text>
         </View>
 
@@ -183,6 +197,12 @@ const AddComplaint = ({ navigation }) => {
           onChangeText={(content) => setContent(content)}
           multiline={true}
           style={Style.TextInputComplaint}
+          backgroundColor="#543310"
+          placeholder="Nhập nội dung"
+          placeholderTextColor="white"
+          textColor="white"
+          cursorColor="white"
+          underlineStyle={{ backgroundColor: "#543310" }}
         />
       </View>
 
@@ -207,8 +227,18 @@ const AddComplaint = ({ navigation }) => {
                   onPress={() => {
                     setCheckedStatus(checkedStatus === c.id ? null : c.id);
                   }}
-                  style={Style.tags}
-                  icon="shape-plus"
+                  style={[
+                    MyStyles.margin,
+                    {
+                      backgroundColor:
+                        checkedStatus === c.id ? "#AF8F6F" : "#543310", // Thay đổi màu nền dựa trên trạng thái được chọn
+                    },
+                  ]}
+                  icon={() => (
+                    // -----Mới thêm-----
+                    <Icon source="tag" size={20} color={"#F8F4E1"} />
+                  )}
+                  textStyle={{ color: "#F8F4E1" }}
                 >
                   {c.name}
                 </Chip>
@@ -234,8 +264,18 @@ const AddComplaint = ({ navigation }) => {
                       checkedComplaint === c.id ? null : c.id
                     );
                   }}
-                  style={Style.tags}
-                  icon="shape-plus"
+                  style={[
+                    MyStyles.margin,
+                    {
+                      backgroundColor:
+                        checkedComplaint === c.id ? "#AF8F6F" : "#543310", // Thay đổi màu nền dựa trên trạng thái được chọn
+                    },
+                  ]}
+                  icon={() => (
+                    // -----Mới thêm-----
+                    <Icon source="tag" size={20} color={"#F8F4E1"} />
+                  )}
+                  textStyle={{ color: "#F8F4E1" }}
                 >
                   {c.name}
                 </Chip>
@@ -251,15 +291,13 @@ const AddComplaint = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {selectedTags.status || selectedTags.complaint ? (
+      {/* {selectedTags.status || selectedTags.complaint ? (
         <View style={[Style.margin, Style.container]}>
-          <Text>Selected Tags:</Text>
-          {selectedTags.status && <Text>Status: {selectedTags.status}</Text>}
-          {selectedTags.complaint && (
-            <Text>Complaint: {selectedTags.complaint}</Text>
-          )}
+            <Text>Selected Tags:</Text>
+            {selectedTags.status && <Text>Status: {selectedTags.status}</Text>}
+            {selectedTags.complaint && <Text>Complaint: {selectedTags.complaint}</Text>}
         </View>
-      ) : null}
+    ) : null} */}
     </ScrollView>
   );
 };

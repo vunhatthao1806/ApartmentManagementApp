@@ -14,6 +14,7 @@ import {
   Button,
   Card,
   Chip,
+  Icon,
   IconButton,
   List,
   Menu,
@@ -55,7 +56,7 @@ const ComplaintDetail = ({ route, navigation }) => {
       let response = await authAPI(accessToken).post(
         endpoints["liked"](complaintId)
       );
-      setLiked(response.data.liked);
+      setLiked(!liked);
       console.log(response.data);
       setLikeCount(response.data.likeCount);
     } catch (ex) {
@@ -139,16 +140,20 @@ const ComplaintDetail = ({ route, navigation }) => {
           <ActivityIndicator />
         ) : (
           <>
-            <Card style={Style.marginbot}>
-              <Text style={Style.title}>{complaint.title}</Text>
-
+            {/* -----Mới thêm----- */}
+            <Card
+              style={[
+                Style.marginbot,
+                { backgroundColor: "white", borderRadius: 0 },
+              ]}
+            >
               <View style={[MyStyles.row, MyStyles.wrap, MyStyles.margin]}>
                 <Avatar.Image
                   style={Style.marginbot}
-                  size={43}
+                  size={45}
                   source={{ uri: complaint.user.avatar }}
                 />
-                <View>
+                <View style={{ marginLeft: 5 }}>
                   <Text style={Style.username}>{complaint.user.username}</Text>
                   <Text style={Style.createdDate}>
                     {moment(complaint.created_date).format("DD/MM/YYYY HH:mm")}
@@ -156,13 +161,19 @@ const ComplaintDetail = ({ route, navigation }) => {
                 </View>
               </View>
 
+              <Text style={Style.title}>{complaint.title}</Text>
+
               <Card.Cover source={{ uri: complaint.image }} />
               <View style={[MyStyles.row, MyStyles.wrap, MyStyles.margin]}>
                 {complaint.complaint_tag && (
                   <Chip
                     key={complaint.complaint_tag.id}
-                    style={MyStyles.margin}
-                    icon="vacuum"
+                    style={[MyStyles.margin, { backgroundColor: "#543310" }]}
+                    icon={() => (
+                      // -----Mới thêm-----
+                      <Icon source="tag" size={20} color={"#F8F4E1"} />
+                    )}
+                    textStyle={{ color: "#F8F4E1" }}
                   >
                     {complaint.complaint_tag.name}
                   </Chip>
@@ -202,12 +213,17 @@ const ComplaintDetail = ({ route, navigation }) => {
         >
           <View style={Style.buttonContainer}>
             <Button
-              icon="thumb-up-outline"
+              icon={() => (
+                // -----Mới thêm-----
+                <Icon
+                  source={liked ? "thumb-up" : "thumb-up-outline"}
+                  size={30}
+                  color={"#543310"}
+                />
+              )}
               mode="outlined"
               onPress={handleLike}
-            >
-              Like
-            </Button>
+            ></Button>
           </View>
           <View style={Style.tags}>
             <Text>Lượt thích: {likeCount}</Text>
@@ -221,11 +237,15 @@ const ComplaintDetail = ({ route, navigation }) => {
             label={"Suy nghĩ của bạn là gì"}
             value={comment}
             onChangeText={setComment}
+            backgroundColor="#F8F4E1"
           />
           <View style={Style.buttonContainer}>
             <Button
               style={Style.button}
-              icon="send-circle"
+              icon={() => (
+                // -----Mới thêm-----
+                <Icon source={"send"} size={25} color={"#543310"} />
+              )}
               mode="contained"
               onPress={handleComment}
             />
@@ -255,7 +275,7 @@ const ComplaintDetail = ({ route, navigation }) => {
                       anchor={
                         <IconButton
                           onPress={() => openMenu(c.id)}
-                          icon="camera"
+                          icon="dots-vertical"
                           size={20}
                         />
                       }

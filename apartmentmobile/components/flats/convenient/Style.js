@@ -84,7 +84,7 @@ export default StyleSheet.create({
     height: 400,
     alignSelf: "center",
     marginTop: 120,
-    backgroundColor: "#F1E5D1",
+    backgroundColor: "#AF8F6F",
     borderRadius: 10,
   },
   uploadImage: {
@@ -106,6 +106,6 @@ export default StyleSheet.create({
   },
   search: {
     margin: 8,
-    backgroundColor: "#B7B597",
+    backgroundColor: "#AF8F6F",
   },
 });

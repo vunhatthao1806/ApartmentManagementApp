@@ -88,7 +88,7 @@ const ItemUpdate = () => {
     <ScrollView>
       <View style={[Style.margin, Style.container]}>
         <View style={MyStyles.row}>
-          <Icon source="file-cabinet" color={"#4F6F52"} size={28} />
+          <Icon source="file-cabinet" color={"#543310"} size={28} />
           <Text style={Style.titleComplaint}> Ecabinets</Text>
         </View>
 
@@ -104,7 +104,7 @@ const ItemUpdate = () => {
               width: "100%",
               borderWidth: 1,
               borderColor: "#ccc",
-              backgroundColor: "#627254",
+              backgroundColor: "#543310",
             }}
             onValueChange={(itemValue) => {
               setSelectedEcabinet(itemValue);
@@ -122,6 +122,7 @@ const ItemUpdate = () => {
             ))}
           </Picker>
         )}
+        {/* <Text>Bạn đã chọn: {ecabinets.find(e => e.id === selectedEcabinet)?.name}</Text> */}
       </View>
       <ScrollView
         contentContainerStyle={{

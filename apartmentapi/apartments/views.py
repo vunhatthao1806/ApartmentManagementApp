@@ -27,10 +27,7 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
     def get_queryset(self):
-        queryset = User.objects.all()
-        # Lấy tất cả các user ngoại trừ user đang request
-        if self.request.user.is_authenticated:
-            queryset = queryset.exclude(id=self.request.user.id)
+        queryset = User.objects.filter(is_staff = False)
         # Tìm kiếm từ khóa
         q = self.request.query_params.get('q')
         if q:
